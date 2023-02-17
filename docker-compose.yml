@@ -1,0 +1,10 @@
+version: "3"
+services:
+  server:
+    build: server/
+  clickhouse:
+    build: clickhouse/
+  postgres:
+    build: postgres/
+  redis:
+    build: redis/
