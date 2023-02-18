@@ -1,10 +1,83 @@
 version: "3"
 services:
-  server:
-    build: server/
-  clickhouse:
-    build: clickhouse/
+  #  clickhouse_server:
+  #    image: yandex/clickhouse-server
+  #    ports:
+  #      - "8123:8123"
+  #    volumes:
+  #      - ./db:/var/lib/clickhouse
+  #    networks:
+  #      - ch_ntw
+  #  clickhouse_client:
+  #    image: yandex/clickhouse-client
+  #    entrypoint:
+  #      - /bin/sleep
+  #    command:
+  #      - infinity
+  #    networks:
+  #      - ch_ntw
+  #  redis:
+  #    build: build/redis/
+  #    network_mode: host
+  #    ports:
+  #      - "6379:6379"
+  web:
+    container_name: web
+    build: web/
+    environment:
+      # для отладки (при запуске в релиз убрать!)
+      - FLASK_ENV=development
+      ## Позволяет отслеживать процесс работы приложения в командной строке
+      - PYTHON UNBUFFERED=True
+    restart: on-failure
+    volumes:
+      - ./web:/web
+    ports:
+      - "5001:5001"
+    command: python3 server.py
   postgres:
+    container_name: postgres
     build: postgres/
-  redis:
-    build: redis/
+    environment:
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./postgres/sql:/docker-entrypoint-initdb.d
+      - .:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+    networks:
+      - postgres
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+    networks:
+      - postgres
+networks:
+  postgres:
+    driver: bridge
+#  ch_ntw:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: 10.222.1.0/24
