@@ -1,26 +1,30 @@
 version: "3"
 services:
-  #  clickhouse_server:
-  #    image: yandex/clickhouse-server
-  #    ports:
-  #      - "8123:8123"
-  #    volumes:
-  #      - ./db:/var/lib/clickhouse
-  #    networks:
-  #      - ch_ntw
-  #  clickhouse_client:
-  #    image: yandex/clickhouse-client
-  #    entrypoint:
-  #      - /bin/sleep
-  #    command:
-  #      - infinity
-  #    networks:
-  #      - ch_ntw
-  #  redis:
-  #    build: build/redis/
-  #    network_mode: host
-  #    ports:
-  #      - "6379:6379"
+  clickhouse_server:
+    container_name: clickhouse_server
+    image: clickhouse/clickhouse-server:22.1
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./clickhouse/data:/var/lib/clickhouse
+      - ./clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - ./clickhouse/users.xml:/etc/clickhouse-server/users.xml
+    networks:
+      - clickhouse
+  clickhouse_client:
+    container_name: clickhouse_client
+    image: clickhouse/clickhouse-client:22.1
+    entrypoint:
+      - /bin/sleep
+    command:
+      - infinity
+    networks:
+      - clickhouse
+  #    redis:
+  #      build: build/redis/
+  #      network_mode: host
+  #      ports:
+  #        - "6379:6379"
   web:
     container_name: web
     build: web/
@@ -44,7 +48,7 @@ services:
       PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
       - ./postgres/sql:/docker-entrypoint-initdb.d
-      - .:/var/lib/postgresql/data
+      - ./postgres/data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     restart: unless-stopped
@@ -63,7 +67,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     volumes:
-      - ./pgadmin:/var/lib/pgadmin
+      - ./postgres/pgadmin:/var/lib/pgadmin
     ports:
       - "5050:80"
     deploy:
@@ -76,8 +80,8 @@ services:
 networks:
   postgres:
     driver: bridge
-#  ch_ntw:
-#    driver: bridge
-#    ipam:
-#      config:
-#        - subnet: 10.222.1.0/24
+  clickhouse:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.222.1.0/24
