@@ -1,11 +1,28 @@
-from flask import Flask
+from flask import Flask, render_template, url_for
+import psycopg2
 
 app = Flask(__name__)
+
+conn = psycopg2.connect(
+    host="postgres",
+    port="5432",
+    database="demo",
+    user='admin',
+    password='admin')
+
+cur = conn.cursor()
 
 
 @app.route('/')
 def home():
-    return '<h1>Hello, World!</h1>'
+    return render_template("main.html")
+
+
+@app.route('/data')
+def database():
+    cur.execute("SELECT airport_name FROM demo.bookings.airports_data;")
+    airport = cur.fetchall()
+    return render_template('main.html', airport=airport)
 
 
 if __name__ == "__main__":

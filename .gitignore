@@ -102,6 +102,9 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+postgres/data
+postgres/pgadmin
+data/archive
 .idea
 .env
 .venv

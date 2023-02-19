@@ -1,25 +1,25 @@
 version: "3"
 services:
-  clickhouse_server:
-    container_name: clickhouse_server
-    image: clickhouse/clickhouse-server:22.1
-    ports:
-      - "8123:8123"
-    volumes:
-      - ./clickhouse/data:/var/lib/clickhouse
-      - ./clickhouse/config.xml:/etc/clickhouse-server/config.xml
-      - ./clickhouse/users.xml:/etc/clickhouse-server/users.xml
-    networks:
-      - clickhouse
-  clickhouse_client:
-    container_name: clickhouse_client
-    image: clickhouse/clickhouse-client:22.1
-    entrypoint:
-      - /bin/sleep
-    command:
-      - infinity
-    networks:
-      - clickhouse
+#  clickhouse_server:
+#    container_name: ch_server
+#    image: clickhouse/clickhouse-server:22.1
+#    ports:
+#      - "8123:8123"
+#    volumes:
+#      - ./clickhouse/data:/var/lib/clickhouse
+#      - ./clickhouse/config.xml:/etc/clickhouse-server/config.xml
+#      - ./clickhouse/users.xml:/etc/clickhouse-server/users.xml
+#    networks:
+#      - clickhouse
+#  clickhouse_client:
+#    container_name: ch_client
+#    image: clickhouse/clickhouse-client:22.1
+#    entrypoint:
+#      - /bin/sleep
+#    command:
+#      - infinity
+#    networks:
+#      - clickhouse
   #    redis:
   #      build: build/redis/
   #      network_mode: host
@@ -38,6 +38,8 @@ services:
       - ./web:/web
     ports:
       - "5001:5001"
+    networks:
+      - postgres
     command: python3 server.py
   postgres:
     container_name: postgres
@@ -80,8 +82,8 @@ services:
 networks:
   postgres:
     driver: bridge
-  clickhouse:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 10.222.1.0/24
+#  clickhouse:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: 10.222.1.0/24
