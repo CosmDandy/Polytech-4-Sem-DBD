@@ -20,7 +20,7 @@ def home():
 
 @app.route('/data')
 def database():
-    cur.execute("SELECT airport_name FROM demo.bookings.airports_data;")
+    cur.execute("SELECT * FROM book;")
     airport = cur.fetchall()
     return render_template('main.html', airport=airport)
 
