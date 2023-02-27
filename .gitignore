@@ -2,7 +2,7 @@ postgres/data
 postgres/pgadmin
 postgres/sql
 data/archive
-
+.DS_Store
 
 
 
