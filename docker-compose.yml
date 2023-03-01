@@ -1,4 +1,4 @@
-version: "3"
+version: "3.9"
 services:
   #  clickhouse_server:
   #    container_name: ch_server
@@ -57,15 +57,18 @@ services:
     container_name: postgres
     build: postgres/
     environment:
+      POSTGRES_DB: "library"
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "admin"
       PGDATA: "/var/lib/postgresql/data/pgdata"
+      POSTGRES_MULTIPLE_EXTENSIONS: "postgis,hstore,postgis_topology,postgis_raster,pgrouting"
+      RUN_AS_ROOT: "true"
     volumes:
       - ./postgres/sql:/docker-entrypoint-initdb.d
       - ./postgres/data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    restart: unless-stopped
+    restart: on-failure
     deploy:
       resources:
         limits:
@@ -89,6 +92,22 @@ services:
         limits:
           cpus: '0.5'
           memory: 1G
+    networks:
+      - postgres
+  qgis:
+    container_name: qgis
+    hostname: qgis-server
+    image: kartoza/qgis-server:LTR
+    volumes:
+      - ./postgres/qgis:/project
+    environment:
+      ServerName: qgis-server
+      LANG: "en_EN.UTF-8"
+      QGIS_PROJECT_FILE: "/data/osm.qgs"
+      QGIS_SERVER_LOG_LEVEL: "0"
+      DEBUG: "1"
+    ports:
+      - "8080:80"
     networks:
       - postgres
 networks:

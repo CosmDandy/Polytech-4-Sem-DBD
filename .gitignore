@@ -1,6 +1,8 @@
 postgres/data
 postgres/pgadmin
 postgres/sql
+postgres/qgis
+data/input
 data/archive
 .DS_Store
 

@@ -1,4 +1,4 @@
-FROM postgres:15.2
+FROM postgis/postgis:15-3.3
 WORKDIR /postgres
-COPY sql/library.sql /docker-entrypoint-initdb.d/
+COPY SQL/library.sql /docker-entrypoint-initdb.d/
 EXPOSE 5432

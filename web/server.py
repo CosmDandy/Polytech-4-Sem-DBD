@@ -36,7 +36,7 @@ def intro():
 
 @app.route('/main')
 def main():
-    cur.execute("SELECT * FROM book JOIN book_author ba on book.book_author = ba.author_id JOIN sex s on ba.author_sex = s.sex_id JOIN book_genre bg on book.book_genre = bg.genre_id JOIN book_lang bl on book.book_lang = bl.lang_id JOIN book_publisher bp on book.book_publisher = bp.publisher_id;")
+    cur.execute("SELECT * FROM book JOIN book_author ba on book.book_author = ba.author_id JOIN book_genre bg on book.book_genre = bg.genre_id JOIN book_lang bl on book.book_lang = bl.lang_id JOIN book_publisher bp on book.book_publisher = bp.publisher_id;SELECT * FROM book JOIN book_author ba on book.book_author = ba.author_id JOIN book_genre bg on book.book_genre = bg.genre_id JOIN book_lang bl on book.book_lang = bl.lang_id JOIN book_publisher bp on book.book_publisher = bp.publisher_id;")
     book_list = cur.fetchall()
     return render_template("main.html", book_list=book_list)
 
