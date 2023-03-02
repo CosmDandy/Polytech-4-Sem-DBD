@@ -39,6 +39,8 @@ services:
     networks:
       - postgres
       - ngrok_net
+    depends_on:
+      - postgres
     command: python3 server.py
   ngrok:
     container_name: ngrok
@@ -64,7 +66,7 @@ services:
       POSTGRES_MULTIPLE_EXTENSIONS: "postgis,hstore,postgis_topology,postgis_raster,pgrouting"
       RUN_AS_ROOT: "true"
     volumes:
-      - ./postgres/sql:/docker-entrypoint-initdb.d
+      - ./postgres/SQL:/docker-entrypoint-initdb.d
       - ./postgres/data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
@@ -94,22 +96,24 @@ services:
           memory: 1G
     networks:
       - postgres
-  qgis:
-    container_name: qgis
-    hostname: qgis-server
-    image: kartoza/qgis-server:LTR
-    volumes:
-      - ./postgres/qgis:/project
-    environment:
-      ServerName: qgis-server
-      LANG: "en_EN.UTF-8"
-      QGIS_PROJECT_FILE: "/data/osm.qgs"
-      QGIS_SERVER_LOG_LEVEL: "0"
-      DEBUG: "1"
-    ports:
-      - "8080:80"
-    networks:
+    depends_on:
       - postgres
+#  qgis:
+#    container_name: qgis
+#    hostname: qgis-server
+#    image: qgisco/qgis-server:latest
+#    volumes:
+#      - ./postgres/qgis:/project
+#    environment:
+#      ServerName: qgis-server
+#      LANG: "en_EN.UTF-8"
+#      QGIS_PROJECT_FILE: "/data/osm.qgs"
+#      QGIS_SERVER_LOG_LEVEL: "0"
+#      DEBUG: "1"
+#    ports:
+#      - "8080:80"
+#    networks:
+#      - postgres
 networks:
   postgres:
     driver: bridge
