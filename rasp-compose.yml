@@ -34,49 +34,6 @@ services:
       - ngrok_net
     depends_on:
       - web
-
-  redis:
-    container_name: redis
-    image: redis:latest
-    restart: always
-    entrypoint: redis-server --appendonly yes --requirepass admin --maxmemory 512mb --maxmemory-policy allkeys-lru
-    networks:
-      - redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - ./redis/data:/data
-  redisinsight:
-    container_name: redisinsight
-    image: redislabs/redisinsight:latest
-    ports:
-      - '8001:8001'
-    volumes:
-      - ./redis/redisinsight:/db
-    networks:
-      - redis
-    depends_on:
-      - redis
-
-  clickhouse_server:
-    container_name: clickhouse_server
-    image: yandex/clickhouse-server:latest
-    ports:
-      - "8123:8123"
-    volumes:
-      - ./clickhouse/data:/var/lib/clickhouse
-    networks:
-      - clickhouse
-  clickhouse_client:
-    container_name: clickhouse_client
-    image: yandex/clickhouse-client:latest
-    entrypoint:
-      - /bin/sleep
-    command:
-      - infinity
-    networks:
-      - clickhouse
-
   postgres:
     container_name: postgres
     build: postgres/
