@@ -2,6 +2,12 @@ postgres/data
 postgres/pgadmin
 postgres/sql
 postgres/qgis
+
+clickhouse/data
+
+redis/data
+redis/redisinsight
+
 data/input
 data/archive
 .DS_Store

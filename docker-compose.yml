@@ -1,30 +1,5 @@
 version: "3.9"
 services:
-  #  clickhouse_server:
-  #    container_name: ch_server
-  #    image: clickhouse/clickhouse-server:22.1
-  #    ports:
-  #      - "8123:8123"
-  #    volumes:
-  #      - ./clickhouse/data:/var/lib/clickhouse
-  #      - ./clickhouse/config.xml:/etc/clickhouse-server/config.xml
-  #      - ./clickhouse/users.xml:/etc/clickhouse-server/users.xml
-  #    networks:
-  #      - clickhouse
-  #  clickhouse_client:
-  #    container_name: ch_client
-  #    image: clickhouse/clickhouse-client:22.1
-  #    entrypoint:
-  #      - /bin/sleep
-  #    command:
-  #      - infinity
-  #    networks:
-  #      - clickhouse
-  #    redis:
-  #      build: build/redis/
-  #      network_mode: host
-  #      ports:
-  #        - "6379:6379"
   web:
     container_name: web
     build: web/
@@ -37,8 +12,10 @@ services:
     ports:
       - "5001:5001"
     networks:
-      - postgres
       - ngrok_net
+      - postgres
+      - redis
+      - clickhouse
     depends_on:
       - postgres
     command: python3 server.py
@@ -55,6 +32,144 @@ services:
       - "4551:4551"
     networks:
       - ngrok_net
+    depends_on:
+      - web
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    entrypoint: redis-server --appendonly yes --requirepass admin --maxmemory 512mb --maxmemory-policy allkeys-lru
+    networks:
+      - redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+  redisinsight:
+    container_name: redisinsight
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    volumes:
+      - ./redis/redisinsight:/db
+    networks:
+      - redis
+    depends_on:
+      - redis
+
+  clickhouse_server:
+    container_name: clickhouse_server
+    image: yandex/clickhouse-server:latest
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./clickhouse/data:/var/lib/clickhouse
+    networks:
+      - clickhouse
+  clickhouse_client:
+    container_name: clickhouse_client
+    image: yandex/clickhouse-client:latest
+    entrypoint:
+      - /bin/sleep
+    command:
+      - infinity
+    networks:
+      - clickhouse
+
+#  clickhouse-zookeeper:
+#    image: zookeeper
+#    ports:
+#      - "2181:2181"
+#      - "2182:2182"
+#    container_name: clickhouse-zookeeper
+#    hostname: clickhouse
+#  clickhouse_client:
+#    container_name: clickhouse_client
+#    image: yandex/clickhouse-client:latest
+#    entrypoint:
+#      - /bin/sleep
+#    command:
+#      - infinity
+#    networks:
+#      - clickhouse
+#  clickhouse-01:
+#    image: yandex/clickhouse-server
+#    hostname: clickhouse-01
+#    container_name: clickhouse-01
+#    ports:
+#      - 9001:9000
+#    volumes:
+#      - ./clickhouse/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
+#      - ./clickhouse/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
+#      - ./clickhouse/config/macros/macros-01.xml:/etc/clickhouse-server/config.d/macros.xml
+#      - ./clickhouse/data/server-01:/var/lib/clickhouse
+#    ulimits:
+#      nofile:
+#        soft: 262144
+#        hard: 262144
+#    networks:
+#      - clickhouse
+#    depends_on:
+#      - "clickhouse-zookeeper"
+#  clickhouse-02:
+#    image: yandex/clickhouse-server
+#    hostname: clickhouse-02
+#    container_name: clickhouse-02
+#    ports:
+#      - 9002:9000
+#    volumes:
+#      - ./clickhouse/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
+#      - ./clickhouse/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
+#      - ./clickhouse/config/macros/macros-02.xml:/etc/clickhouse-server/config.d/macros.xml
+#      - ./clickhouse/data/server-02:/var/lib/clickhouse
+#    ulimits:
+#      nofile:
+#        soft: 262144
+#        hard: 262144
+#    networks:
+#      - clickhouse
+#    depends_on:
+#      - "clickhouse-zookeeper"
+#  clickhouse-03:
+#    image: yandex/clickhouse-server
+#    hostname: clickhouse-03
+#    container_name: clickhouse-03
+#    ports:
+#      - 9003:9000
+#    volumes:
+#      - ./clickhouse/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
+#      - ./clickhouse/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
+#      - ./clickhouse/config/macros/macros-03.xml:/etc/clickhouse-server/config.d/macros.xml
+#      - ./clickhouse/data/server-03:/var/lib/clickhouse
+#    ulimits:
+#      nofile:
+#        soft: 262144
+#        hard: 262144
+#    networks:
+#      - clickhouse
+#    depends_on:
+#      - "clickhouse-zookeeper"
+#  clickhouse-04:
+#    image: yandex/clickhouse-server
+#    hostname: clickhouse-04
+#    container_name: clickhouse-04
+#    ports:
+#      - 9004:9000
+#    volumes:
+#      - ./clickhouse/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
+#      - ./clickhouse/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
+#      - ./clickhouse/config/macros/macros-04.xml:/etc/clickhouse-server/config.d/macros.xml
+#      - ./clickhouse/data/server-04:/var/lib/clickhouse
+#    ulimits:
+#      nofile:
+#        soft: 262144
+#        hard: 262144
+#    networks:
+#      - clickhouse
+#    depends_on:
+#      - "clickhouse-zookeeper"
+
   postgres:
     container_name: postgres
     build: postgres/
@@ -119,8 +234,7 @@ networks:
     driver: bridge
   ngrok_net:
     driver: bridge
-#  clickhouse:
-#    driver: bridge
-#    ipam:
-#      config:
-#        - subnet: 10.222.1.0/24
+  redis:
+    driver: bridge
+  clickhouse:
+    driver: bridge
