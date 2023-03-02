@@ -16,6 +16,11 @@ services:
       - postgres
       - redis
       - clickhouse
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 300M
     depends_on:
       - postgres
     command: python3 server.py
@@ -32,6 +37,11 @@ services:
       - "4551:4551"
     networks:
       - ngrok_net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 150M
     depends_on:
       - web
 
@@ -46,6 +56,11 @@ services:
       - "6379:6379"
     volumes:
       - ./redis/data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 3G
   redisinsight:
     container_name: redisinsight
     image: redislabs/redisinsight:latest
@@ -55,6 +70,11 @@ services:
       - ./redis/redisinsight:/db
     networks:
       - redis
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 300M
     depends_on:
       - redis
 
@@ -67,6 +87,11 @@ services:
       - ./clickhouse/data:/var/lib/clickhouse
     networks:
       - clickhouse
+    deploy:
+      resources:
+        limits:
+          cpus: '0.4'
+          memory: 2G
   clickhouse_client:
     container_name: clickhouse_client
     image: yandex/clickhouse-client:latest
@@ -76,7 +101,11 @@ services:
       - infinity
     networks:
       - clickhouse
-
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 300M
 #  clickhouse-zookeeper:
 #    image: zookeeper
 #    ports:
@@ -190,7 +219,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 4G
+          memory: 2G
     networks:
       - postgres
   pgadmin:
@@ -208,7 +237,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 1G
+          memory: 500M
     networks:
       - postgres
     depends_on:
