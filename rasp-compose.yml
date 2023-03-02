@@ -34,9 +34,33 @@ services:
       - ngrok_net
     depends_on:
       - web
+
+  redis:
+    container_name: redis
+    image: arm32v6/redis
+    restart: always
+    entrypoint: redis-server --appendonly yes --requirepass admin --maxmemory 512mb --maxmemory-policy allkeys-lru
+    networks:
+      - redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+  redisinsight:
+    container_name: redisinsight
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    volumes:
+      - ./redis/redisinsight:/db
+    networks:
+      - redis
+    depends_on:
+      - redis
+
   postgres:
     container_name: postgres
-    build: postgres/
+    image: arm32v6/postgres
     environment:
       POSTGRES_DB: "library"
       POSTGRES_USER: "admin"
