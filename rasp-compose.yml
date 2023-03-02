@@ -1,0 +1,121 @@
+version: '3'
+services:
+  web:
+    container_name: web
+    build: web/
+    environment:
+      - FLASK_ENV=development
+      - PYTHON UNBUFFERED=True
+    restart: on-failure
+    volumes:
+      - ./web:/web
+    ports:
+      - "5001:5001"
+    networks:
+      - ngrok_net
+      - postgres
+      - redis
+      - clickhouse
+    depends_on:
+      - postgres
+    command: python3 server.py
+  ngrok:
+    container_name: ngrok
+    image: shkoliar/ngrok:latest
+    environment:
+      PROTOCOL: "http"
+      REGION: "eu"
+      DOMAIN: "web"
+      AUTH_TOKEN: "1WwFAxw7gHT6DL44s0wUvqnPH7I_6UnBL4j2tNuGxCNcQB3KQ"
+      PORT: "5001"
+    ports:
+      - "4551:4551"
+    networks:
+      - ngrok_net
+    depends_on:
+      - web
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    entrypoint: redis-server --appendonly yes --requirepass admin --maxmemory 512mb --maxmemory-policy allkeys-lru
+    networks:
+      - redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+  redisinsight:
+    container_name: redisinsight
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    volumes:
+      - ./redis/redisinsight:/db
+    networks:
+      - redis
+    depends_on:
+      - redis
+
+  clickhouse_server:
+    container_name: clickhouse_server
+    image: yandex/clickhouse-server:latest
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./clickhouse/data:/var/lib/clickhouse
+    networks:
+      - clickhouse
+  clickhouse_client:
+    container_name: clickhouse_client
+    image: yandex/clickhouse-client:latest
+    entrypoint:
+      - /bin/sleep
+    command:
+      - infinity
+    networks:
+      - clickhouse
+
+  postgres:
+    container_name: postgres
+    build: postgres/
+    environment:
+      POSTGRES_DB: "library"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+      POSTGRES_MULTIPLE_EXTENSIONS: "postgis,hstore,postgis_topology,postgis_raster,pgrouting"
+      RUN_AS_ROOT: "true"
+    volumes:
+      - ./postgres/SQL:/docker-entrypoint-initdb.d
+      - ./postgres/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: on-failure
+    networks:
+      - postgres
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - ./postgres/pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - postgres
+    depends_on:
+      - postgres
+networks:
+  postgres:
+    driver: bridge
+  ngrok_net:
+    driver: bridge
+  redis:
+    driver: bridge
+  clickhouse:
+    driver: bridge
