@@ -26,7 +26,7 @@ services:
     command: python3 server.py
   ngrok:
     container_name: ngrok
-    image: shkoliar/ngrok:latest
+    image: cosmdandy/arm32v6-ngrok:latest
     environment:
       PROTOCOL: "http"
       REGION: "eu"
@@ -47,7 +47,7 @@ services:
 
   redis:
     container_name: redis
-    image: redis:latest
+    image: cosmdandy/arm32v6-redis:latest
     restart: always
     entrypoint: redis-server --appendonly yes --requirepass admin --maxmemory 512mb --maxmemory-policy allkeys-lru
     networks:
@@ -61,26 +61,26 @@ services:
         limits:
           cpus: '0.7'
           memory: 3G
-  redisinsight:
-    container_name: redisinsight
-    image: redislabs/redisinsight:latest
-    ports:
-      - '8001:8001'
-    volumes:
-      - ./redis/redisinsight:/db
-    networks:
-      - redis
-    deploy:
-      resources:
-        limits:
-          cpus: '0.1'
-          memory: 300M
-    depends_on:
-      - redis
+#  redisinsight:
+#    container_name: redisinsight
+#    image: redislabs/redisinsight:latest
+#    ports:
+#      - '8001:8001'
+#    volumes:
+#      - ./redis/redisinsight:/db
+#    networks:
+#      - redis
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.1'
+#          memory: 300M
+#    depends_on:
+#      - redis
 
   clickhouse_server:
     container_name: clickhouse_server
-    image: yandex/clickhouse-server:latest
+    image: cosmdandy/arm32v6-clickhouse_server:latest
     ports:
       - "8123:8123"
     volumes:
@@ -94,7 +94,7 @@ services:
           memory: 2G
   clickhouse_client:
     container_name: clickhouse_client
-    image: yandex/clickhouse-client:latest
+    image: cosmdandy/arm32v6-clickhouse_client:latest
     entrypoint:
       - /bin/sleep
     command:
@@ -106,98 +106,6 @@ services:
         limits:
           cpus: '0.1'
           memory: 300M
-#  clickhouse-zookeeper:
-#    image: zookeeper
-#    ports:
-#      - "2181:2181"
-#      - "2182:2182"
-#    container_name: clickhouse-zookeeper
-#    hostname: clickhouse
-#  clickhouse_client:
-#    container_name: clickhouse_client
-#    image: yandex/clickhouse-client:latest
-#    entrypoint:
-#      - /bin/sleep
-#    command:
-#      - infinity
-#    networks:
-#      - clickhouse
-#  clickhouse-01:
-#    image: yandex/clickhouse-server
-#    hostname: clickhouse-01
-#    container_name: clickhouse-01
-#    ports:
-#      - 9001:9000
-#    volumes:
-#      - ./clickhouse/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
-#      - ./clickhouse/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
-#      - ./clickhouse/config/macros/macros-01.xml:/etc/clickhouse-server/config.d/macros.xml
-#      - ./clickhouse/data/server-01:/var/lib/clickhouse
-#    ulimits:
-#      nofile:
-#        soft: 262144
-#        hard: 262144
-#    networks:
-#      - clickhouse
-#    depends_on:
-#      - "clickhouse-zookeeper"
-#  clickhouse-02:
-#    image: yandex/clickhouse-server
-#    hostname: clickhouse-02
-#    container_name: clickhouse-02
-#    ports:
-#      - 9002:9000
-#    volumes:
-#      - ./clickhouse/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
-#      - ./clickhouse/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
-#      - ./clickhouse/config/macros/macros-02.xml:/etc/clickhouse-server/config.d/macros.xml
-#      - ./clickhouse/data/server-02:/var/lib/clickhouse
-#    ulimits:
-#      nofile:
-#        soft: 262144
-#        hard: 262144
-#    networks:
-#      - clickhouse
-#    depends_on:
-#      - "clickhouse-zookeeper"
-#  clickhouse-03:
-#    image: yandex/clickhouse-server
-#    hostname: clickhouse-03
-#    container_name: clickhouse-03
-#    ports:
-#      - 9003:9000
-#    volumes:
-#      - ./clickhouse/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
-#      - ./clickhouse/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
-#      - ./clickhouse/config/macros/macros-03.xml:/etc/clickhouse-server/config.d/macros.xml
-#      - ./clickhouse/data/server-03:/var/lib/clickhouse
-#    ulimits:
-#      nofile:
-#        soft: 262144
-#        hard: 262144
-#    networks:
-#      - clickhouse
-#    depends_on:
-#      - "clickhouse-zookeeper"
-#  clickhouse-04:
-#    image: yandex/clickhouse-server
-#    hostname: clickhouse-04
-#    container_name: clickhouse-04
-#    ports:
-#      - 9004:9000
-#    volumes:
-#      - ./clickhouse/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
-#      - ./clickhouse/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
-#      - ./clickhouse/config/macros/macros-04.xml:/etc/clickhouse-server/config.d/macros.xml
-#      - ./clickhouse/data/server-04:/var/lib/clickhouse
-#    ulimits:
-#      nofile:
-#        soft: 262144
-#        hard: 262144
-#    networks:
-#      - clickhouse
-#    depends_on:
-#      - "clickhouse-zookeeper"
 
   postgres:
     container_name: postgres
@@ -222,41 +130,25 @@ services:
           memory: 2G
     networks:
       - postgres
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    volumes:
-      - ./postgres/pgadmin:/var/lib/pgadmin
-    ports:
-      - "5050:80"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 500M
-    networks:
-      - postgres
-    depends_on:
-      - postgres
-#  qgis:
-#    container_name: qgis
-#    hostname: qgis-server
-#    image: qgisco/qgis-server:latest
-#    volumes:
-#      - ./postgres/qgis:/project
+#  pgadmin:
+#    container_name: pgadmin
+#    image: dpage/pgadmin4
+#    restart: always
 #    environment:
-#      ServerName: qgis-server
-#      LANG: "en_EN.UTF-8"
-#      QGIS_PROJECT_FILE: "/data/osm.qgs"
-#      QGIS_SERVER_LOG_LEVEL: "0"
-#      DEBUG: "1"
+#      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+#      PGADMIN_DEFAULT_PASSWORD: admin
+#    volumes:
+#      - ./postgres/pgadmin:/var/lib/pgadmin
 #    ports:
-#      - "8080:80"
+#      - "5050:80"
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.5'
+#          memory: 500M
 #    networks:
+#      - postgres
+#    depends_on:
 #      - postgres
 networks:
   postgres:

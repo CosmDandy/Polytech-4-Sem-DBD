@@ -1,0 +1,112 @@
+#  clickhouse-zookeeper:
+#    image: zookeeper
+#    ports:
+#      - "2181:2181"
+#      - "2182:2182"
+#    container_name: clickhouse-zookeeper
+#    hostname: clickhouse
+#  clickhouse_client:
+#    container_name: clickhouse_client
+#    image: yandex/clickhouse-client:latest
+#    entrypoint:
+#      - /bin/sleep
+#    command:
+#      - infinity
+#    networks:
+#      - clickhouse
+#  clickhouse-01:
+#    image: yandex/clickhouse-server
+#    hostname: clickhouse-01
+#    container_name: clickhouse-01
+#    ports:
+#      - 9001:9000
+#    volumes:
+#      - ./clickhouse/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
+#      - ./clickhouse/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
+#      - ./clickhouse/config/macros/macros-01.xml:/etc/clickhouse-server/config.d/macros.xml
+#      - ./clickhouse/data/server-01:/var/lib/clickhouse
+#    ulimits:
+#      nofile:
+#        soft: 262144
+#        hard: 262144
+#    networks:
+#      - clickhouse
+#    depends_on:
+#      - "clickhouse-zookeeper"
+#  clickhouse-02:
+#    image: yandex/clickhouse-server
+#    hostname: clickhouse-02
+#    container_name: clickhouse-02
+#    ports:
+#      - 9002:9000
+#    volumes:
+#      - ./clickhouse/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
+#      - ./clickhouse/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
+#      - ./clickhouse/config/macros/macros-02.xml:/etc/clickhouse-server/config.d/macros.xml
+#      - ./clickhouse/data/server-02:/var/lib/clickhouse
+#    ulimits:
+#      nofile:
+#        soft: 262144
+#        hard: 262144
+#    networks:
+#      - clickhouse
+#    depends_on:
+#      - "clickhouse-zookeeper"
+#  clickhouse-03:
+#    image: yandex/clickhouse-server
+#    hostname: clickhouse-03
+#    container_name: clickhouse-03
+#    ports:
+#      - 9003:9000
+#    volumes:
+#      - ./clickhouse/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
+#      - ./clickhouse/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
+#      - ./clickhouse/config/macros/macros-03.xml:/etc/clickhouse-server/config.d/macros.xml
+#      - ./clickhouse/data/server-03:/var/lib/clickhouse
+#    ulimits:
+#      nofile:
+#        soft: 262144
+#        hard: 262144
+#    networks:
+#      - clickhouse
+#    depends_on:
+#      - "clickhouse-zookeeper"
+#  clickhouse-04:
+#    image: yandex/clickhouse-server
+#    hostname: clickhouse-04
+#    container_name: clickhouse-04
+#    ports:
+#      - 9004:9000
+#    volumes:
+#      - ./clickhouse/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml
+#      - ./clickhouse/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml
+#      - ./clickhouse/config/macros/macros-04.xml:/etc/clickhouse-server/config.d/macros.xml
+#      - ./clickhouse/data/server-04:/var/lib/clickhouse
+#    ulimits:
+#      nofile:
+#        soft: 262144
+#        hard: 262144
+#    networks:
+#      - clickhouse
+#    depends_on:
+#      - "clickhouse-zookeeper"
+
+
+
+
+#  qgis:
+#    container_name: qgis
+#    hostname: qgis-server
+#    image: qgisco/qgis-server:latest
+#    volumes:
+#      - ./postgres/qgis:/project
+#    environment:
+#      ServerName: qgis-server
+#      LANG: "en_EN.UTF-8"
+#      QGIS_PROJECT_FILE: "/data/osm.qgs"
+#      QGIS_SERVER_LOG_LEVEL: "0"
+#      DEBUG: "1"
+#    ports:
+#      - "8080:80"
+#    networks:
+#      - postgres
