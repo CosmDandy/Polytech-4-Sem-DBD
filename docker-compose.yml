@@ -16,11 +16,6 @@ services:
       - postgres
       - redis
       - clickhouse
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 300M
     depends_on:
       - postgres
     command: python3 server.py
@@ -37,14 +32,8 @@ services:
       - "4551:4551"
     networks:
       - ngrok_net
-    deploy:
-      resources:
-        limits:
-          cpus: '0.05'
-          memory: 150M
     depends_on:
       - web
-
   redis:
     container_name: redis
     image: cosmdandy/arm32v6-redis:latest
@@ -56,28 +45,6 @@ services:
       - "6379:6379"
     volumes:
       - ./redis/data:/data
-    deploy:
-      resources:
-        limits:
-          cpus: '0.7'
-          memory: 3G
-#  redisinsight:
-#    container_name: redisinsight
-#    image: redislabs/redisinsight:latest
-#    ports:
-#      - '8001:8001'
-#    volumes:
-#      - ./redis/redisinsight:/db
-#    networks:
-#      - redis
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.1'
-#          memory: 300M
-#    depends_on:
-#      - redis
-
   clickhouse_server:
     container_name: clickhouse_server
     image: cosmdandy/arm32v6-clickhouse_server:latest
@@ -87,11 +54,6 @@ services:
       - ./clickhouse/data:/var/lib/clickhouse
     networks:
       - clickhouse
-    deploy:
-      resources:
-        limits:
-          cpus: '0.4'
-          memory: 2G
   clickhouse_client:
     container_name: clickhouse_client
     image: cosmdandy/arm32v6-clickhouse_client:latest
@@ -101,12 +63,6 @@ services:
       - infinity
     networks:
       - clickhouse
-    deploy:
-      resources:
-        limits:
-          cpus: '0.1'
-          memory: 300M
-
   postgres:
     container_name: postgres
     build: postgres/
@@ -123,33 +79,8 @@ services:
     ports:
       - "5432:5432"
     restart: on-failure
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 2G
     networks:
       - postgres
-#  pgadmin:
-#    container_name: pgadmin
-#    image: dpage/pgadmin4
-#    restart: always
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-#      PGADMIN_DEFAULT_PASSWORD: admin
-#    volumes:
-#      - ./postgres/pgadmin:/var/lib/pgadmin
-#    ports:
-#      - "5050:80"
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.5'
-#          memory: 500M
-#    networks:
-#      - postgres
-#    depends_on:
-#      - postgres
 networks:
   postgres:
     driver: bridge
