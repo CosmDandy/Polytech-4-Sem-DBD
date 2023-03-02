@@ -37,7 +37,7 @@ services:
 
   redis:
     container_name: redis
-    image: arm32v6/redis
+    image: arm32v6/redis:alpine
     restart: always
     entrypoint: redis-server --appendonly yes --requirepass admin --maxmemory 512mb --maxmemory-policy allkeys-lru
     networks:
@@ -60,7 +60,7 @@ services:
 
   postgres:
     container_name: postgres
-    image: arm32v6/postgres
+    image: arm32v6/postgres:alpine
     environment:
       POSTGRES_DB: "library"
       POSTGRES_USER: "admin"
@@ -78,7 +78,7 @@ services:
       - postgres
   pgadmin:
     container_name: pgadmin
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:latest
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
