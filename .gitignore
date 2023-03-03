@@ -8,8 +8,8 @@ clickhouse/data
 redis/data
 redis/redisinsight
 
-data/input
-data/archive
+DataBase_Data/input
+DataBase_Data/archive
 .DS_Store
 
 

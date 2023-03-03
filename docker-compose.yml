@@ -13,9 +13,9 @@ services:
       - "5001:5001"
     networks:
       - ngrok_net
-      - postgres
-      - redis
-      - clickhouse
+      - postgres_net
+      - redis_net
+      - clickhouse_net
     deploy:
       resources:
         limits:
@@ -51,7 +51,7 @@ services:
     restart: always
     entrypoint: redis-server --appendonly yes --requirepass admin --maxmemory 512mb --maxmemory-policy allkeys-lru
     networks:
-      - redis
+      - redis_net
     ports:
       - "6379:6379"
     volumes:
@@ -61,22 +61,22 @@ services:
         limits:
           cpus: '0.7'
           memory: 3G
-#  redisinsight:
-#    container_name: redisinsight
-#    image: redislabs/redisinsight:latest
-#    ports:
-#      - '8001:8001'
-#    volumes:
-#      - ./redis/redisinsight:/db
-#    networks:
-#      - redis
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.1'
-#          memory: 300M
-#    depends_on:
-#      - redis
+  redisinsight:
+    container_name: redisinsight
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    volumes:
+      - ./redis/redisinsight:/db
+    networks:
+      - redis_net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 300M
+    depends_on:
+      - redis
 
   clickhouse_server:
     container_name: clickhouse_server
@@ -86,7 +86,7 @@ services:
     volumes:
       - ./clickhouse/data:/var/lib/clickhouse
     networks:
-      - clickhouse
+      - clickhouse_net
     deploy:
       resources:
         limits:
@@ -100,7 +100,7 @@ services:
     command:
       - infinity
     networks:
-      - clickhouse
+      - clickhouse_net
     deploy:
       resources:
         limits:
@@ -111,7 +111,7 @@ services:
     container_name: postgres
     build: postgres/
     environment:
-      POSTGRES_DB: "library"
+#      POSTGRES_DB: "library"
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "admin"
       PGDATA: "/var/lib/postgresql/data/pgdata"
@@ -129,33 +129,33 @@ services:
           cpus: '1'
           memory: 2G
     networks:
+      - postgres_net
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - ./postgres/pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
+    networks:
+      - postgres_net
+    depends_on:
       - postgres
-#  pgadmin:
-#    container_name: pgadmin
-#    image: dpage/pgadmin4
-#    restart: always
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-#      PGADMIN_DEFAULT_PASSWORD: admin
-#    volumes:
-#      - ./postgres/pgadmin:/var/lib/pgadmin
-#    ports:
-#      - "5050:80"
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.5'
-#          memory: 500M
-#    networks:
-#      - postgres
-#    depends_on:
-#      - postgres
 networks:
-  postgres:
+  postgres_net:
     driver: bridge
   ngrok_net:
     driver: bridge
-  redis:
+  redis_net:
     driver: bridge
-  clickhouse:
+  clickhouse_net:
     driver: bridge
