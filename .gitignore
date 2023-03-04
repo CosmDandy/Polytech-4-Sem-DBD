@@ -1,6 +1,5 @@
 postgres/data
 postgres/pgadmin
-postgres/sql
 postgres/qgis
 
 clickhouse/data
