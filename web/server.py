@@ -1,15 +1,14 @@
 from flask import Flask, render_template, url_for
 import psycopg2
+import pandas as pd
 
 app = Flask(__name__)
-
 conn = psycopg2.connect(
     host="postgres",
     port="5432",
     database="library",
     user='admin',
     password='admin')
-
 cur = conn.cursor()
 
 
@@ -36,9 +35,10 @@ def intro():
 
 @app.route('/main')
 def main():
-    cur.execute("SELECT * FROM book JOIN book_author ba on book.book_author = ba.author_id JOIN book_genre bg on book.book_genre = bg.genre_id JOIN book_lang bl on book.book_lang = bl.lang_id JOIN book_publisher bp on book.book_publisher = bp.publisher_id;SELECT * FROM book JOIN book_author ba on book.book_author = ba.author_id JOIN book_genre bg on book.book_genre = bg.genre_id JOIN book_lang bl on book.book_lang = bl.lang_id JOIN book_publisher bp on book.book_publisher = bp.publisher_id;")
-    book_list = cur.fetchall()
-    return render_template("main.html", book_list=book_list)
+    cur.execute(
+        "SELECT * FROM lib_schema.book JOIN lib_schema.book_author ba on book.book_author = ba.author_id JOIN lib_schema.book_genre bg on book.book_genre = bg.genre_id JOIN lib_schema.book_lang bl on book.book_lang = bl.lang_id JOIN lib_schema.book_publisher bp on book.book_publisher = bp.publisher_id;")
+    book_list = pd.DataFrame(cur.fetchall()).drop([0, 2, 3, 4, 5, 12, 14, 15, 17, 19], axis=1)
+    return render_template("main.html", book_list=book_list.values.tolist())
 
 
 @app.route('/login')
