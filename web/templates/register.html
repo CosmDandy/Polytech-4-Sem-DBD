@@ -56,49 +56,49 @@
 {% endblock %}
 {% block body %}
     <main class="form-signin w-100 m-auto text-center">
-        <form>
+        <form action="" method="post">
+            {{ form.csrf_token }}
             <svg xmlns="http://www.w3.org/2000/svg" width="35" height="50" fill="currentColor"
                  class="bi bi-bookmark-fill" viewBox="0 0 16 16">
                 <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/>
             </svg>
             <h1 class="h3 mb-3 fw-normal">Регистрация</h1>
             <div class="form-floating">
-                <input type="text" class="form-control top" id="floatingPassword" placeholder="Password">
-                <label for="floatingPassword">Фамилия</label>
+                {{ form.people_surname(class="form-control top", placeholder="Фамилия") }}
+                {{ form.people_surname.label }}
             </div>
             <div class="form-floating">
-                <input type="text" class="form-control center" id="floatingPassword" placeholder="Password">
-                <label for="floatingPassword">Имя</label>
+                {{ form.people_name(class="form-control center", placeholder="Имя") }}
+                {{ form.people_name.label }}
             </div>
             <div class="form-floating">
-                <input type="text" class="form-control center" id="floatingPassword" placeholder="Password">
-                <label for="floatingPassword">Отчество</label>
+                {{ form.people_patronymic(class="form-control center", placeholder="Отчество") }}
+                {{ form.people_patronymic.label }}
+            </div>
+            <div>
+                {{ form.people_sex(class="form-control center", style_="padding: 1em", placeholder="Пол") }}
             </div>
             <div class="form-floating">
-                <input type="text" class="form-control center" id="floatingPassword" placeholder="Password">
-                <label for="floatingPassword">Пол</label>
+                {{ form.people_address(class="form-control center", placeholder="Адрес") }}
+                {{ form.people_address.label }}
             </div>
             <div class="form-floating">
-                <input type="text" class="form-control center" id="floatingPassword" placeholder="Password">
-                <label for="floatingPassword">Адрес</label>
+                {{ form.people_pass_num(class="form-control center", placeholder="Номер паспорта") }}
+                {{ form.people_pass_num.label }}
             </div>
             <div class="form-floating">
-                <input type="text" class="form-control center" id="floatingPassword" placeholder="Password">
-                <label for="floatingPassword">Номер паспорта</label>
+                {{ form.people_tel_num(class="form-control center", placeholder="Номер телефона") }}
+                {{ form.people_tel_num.label }}
             </div>
             <div class="form-floating">
-                <input type="text" class="form-control center" id="floatingPassword" placeholder="Password">
-                <label for="floatingPassword">Номер телефона</label>
-            </div>
-            <div class="form-floating">
-                <input type="email" class="form-control center" id="floatingInput" placeholder="name@example.com">
-                <label for="floatingInput">Email</label>
+                {{ form.people_email(class="form-control center", placeholder="Email") }}
+                {{ form.people_email.label }}
             </div>
             <div class="form-floating mb-3">
-                <input type="password" class="form-control bottom" id="floatingPassword" placeholder="Password">
-                <label for="floatingPassword">Пароль</label>
+                {{ form.people_password(class="form-control center", placeholder="Пароль") }}
+                {{ form.people_password.label }}
             </div>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Зарегистрироваться</button>
+            {{ form.submit(class="w-100 btn btn-lg btn-primary") }}
         </form>
     </main>
 {% endblock %}

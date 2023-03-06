@@ -51,19 +51,18 @@
 {% endblock %}
 {% block body %}
     <main class="form-signin w-100 m-auto text-center">
-        <form>
+        <form action="" method="GET" name="login">
             <svg xmlns="http://www.w3.org/2000/svg" width="35" height="50" fill="currentColor"
                  class="bi bi-bookmark-fill" viewBox="0 0 16 16">
                 <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/>
             </svg>
             <h1 class="h3 mb-3 fw-normal">Вход в аккаунт</h1>
-
             <div class="form-floating">
-                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <input type="email" class="form-control" id="people_email" name="people_email" placeholder="name@example.com">
                 <label for="floatingInput">Email</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                <input type="password" class="form-control" id="people_password" name="people_password" placeholder="Password">
                 <label for="floatingPassword">Пароль</label>
             </div>
             <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
