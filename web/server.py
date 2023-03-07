@@ -80,7 +80,8 @@ def login():
             user='admin',
             password='admin')
         cur = conn.cursor()
-        cur.execute(f"SELECT people_id, people_email, people_password FROM lib_schema.people WHERE people_email='{login_form.people_email.data}';")
+        cur.execute(
+            f"SELECT people_id, people_email, people_password FROM lib_schema.people WHERE people_email='{login_form.people_email.data}';")
         query = cur.fetchall()
         if len(query) != 0:
             user_data = query[0]
