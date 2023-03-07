@@ -87,7 +87,7 @@
                 {{ form.people_pass_num.label }}
             </div>
             <div class="form-floating">
-                {{ form.people_tel_num(class="form-control center", placeholder="Номер телефона") }}
+                {{ form.people_tel_num(class="form-control center", pattern="[0-9]{1}[0-9]{3}[0-9]{3}[0-9]{2}[0-9]{2}",placeholder="Номер телефона") }}
                 {{ form.people_tel_num.label }}
             </div>
             <div class="form-floating">
