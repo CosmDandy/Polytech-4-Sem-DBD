@@ -1,6 +1,7 @@
 import random
 import logging
 from flask import Flask, render_template, url_for, flash, redirect
+from flask_login import UserMixin
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, EmailField, TelField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired, EqualTo, Email, Length
@@ -11,8 +12,66 @@ import os
 
 
 # Classes
-class Config(object):
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+class User(UserMixin):
+    def __init__(self, user_id=None, user_name=None, user_surname=None, user_email=None, user_password=None,
+                 user_role=None):
+        self.user_id = user_id
+        self.user_name = user_name
+        self.user_surname = user_surname
+        self.user_email = user_email
+        self.user_password = user_password
+        self.user_role = user_role
+        # self.user_id = db.Column(db.Integer(), nullable=False, unique=True, primary_key=True, autoincrement=True)
+        # self.user_name = db.Column(db.String())
+        # self.user_surname = db.Column(db.String())
+        # self.user_email = db.Column(db.String())
+        # self.user_password = db.Column(db.String())
+        # self.user_role = db.Column(db.Integer())
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.user_id)
+
+    def get_name(self):
+        return str(self.user_name)
+
+    def get_surname(self):
+        return str(self.user_surname)
+
+    def get_email(self):
+        return str(self.user_email)
+
+    def get_password(self):
+        return str(self.user_password)
+
+    def get_role(self):
+        return self.user_role
+
+    def set_id(self, user_id: int):
+        self.user_id = user_id
+
+    def set_name(self, user_name: str):
+        self.user_name = user_name
+
+    def set_surname(self, user_surname: str):
+        self.user_surname = user_surname
+
+    def set_email(self, user_email: str):
+        self.user_email = user_email
+
+    def set_password(self, user_password: str):
+        self.user_password = user_password
+
+    def set_role(self, user_role: int):
+        self.user_role = user_role
 
 
 class RegisterForm(FlaskForm):
@@ -37,7 +96,7 @@ class LoginForm(FlaskForm):
 
 # Create app
 app = Flask(__name__)
-app.config.from_object(Config)
+app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 
@@ -53,6 +112,7 @@ def connect_to_db():
     cursor = conn.cursor()
 
 
+@app.route('/')
 @app.route('/intro')
 def intro():
     return render_template("intro.html")
