@@ -26,7 +26,7 @@ services:
     command: python3 server.py
   ngrok:
     container_name: ngrok
-    image: cosmdandy/arm32v6-ngrok:latest
+    image: shkoliar/ngrok:latest
     environment:
       PROTOCOL: "http"
       REGION: "eu"
@@ -45,67 +45,67 @@ services:
     depends_on:
       - web
 
-#  redis:
-#    container_name: redis
-#    image: cosmdandy/arm32v6-redis:latest
-#    restart: always
-#    entrypoint: redis-server --appendonly yes --requirepass admin --maxmemory 512mb --maxmemory-policy allkeys-lru
-#    networks:
-#      - redis_net
-#    ports:
-#      - "6379:6379"
-#    volumes:
-#      - ./redis/data:/data
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.7'
-#          memory: 3G
-#  redisinsight:
-#    container_name: redisinsight
-#    image: redislabs/redisinsight:latest
-#    ports:
-#      - '8001:8001'
-#    volumes:
-#      - ./redis/redisinsight:/db
-#    networks:
-#      - redis_net
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.1'
-#          memory: 300M
-#    depends_on:
-#      - redis
-#
-#  clickhouse_server:
-#    container_name: clickhouse_server
-#    image: cosmdandy/arm32v6-clickhouse_server:latest
-#    ports:
-#      - "8123:8123"
-#    volumes:
-#      - ./clickhouse/data:/var/lib/clickhouse
-#    networks:
-#      - clickhouse_net
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.4'
-#          memory: 2G
-#  clickhouse_client:
-#    container_name: clickhouse_client
-#    image: cosmdandy/arm32v6-clickhouse_client:latest
-#    entrypoint:
-#      - /bin/sleep
-#    command:
-#      - infinity
-#    networks:
-#      - clickhouse_net
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.1'
-#          memory: 300M
+  redis:
+    container_name: redis
+    image: cosmdandy/arm32v6-redis:latest
+    restart: always
+    entrypoint: redis-server --appendonly yes --requirepass admin --maxmemory 512mb --maxmemory-policy allkeys-lru
+    networks:
+      - redis_net
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 3G
+  redisinsight:
+    container_name: redisinsight
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    volumes:
+      - ./redis/redisinsight:/db
+    networks:
+      - redis_net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 300M
+    depends_on:
+      - redis
+
+  clickhouse_server:
+    container_name: clickhouse_server
+    image: cosmdandy/arm32v6-clickhouse_server:latest
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./clickhouse/data:/var/lib/clickhouse
+    networks:
+      - clickhouse_net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.4'
+          memory: 2G
+  clickhouse_client:
+    container_name: clickhouse_client
+    image: cosmdandy/arm32v6-clickhouse_client:latest
+    entrypoint:
+      - /bin/sleep
+    command:
+      - infinity
+    networks:
+      - clickhouse_net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 300M
 
   postgres:
     container_name: postgres

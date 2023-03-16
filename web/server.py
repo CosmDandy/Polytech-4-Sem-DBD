@@ -1,32 +1,49 @@
 import random
 import logging
+from typing import Dict, Optional
 from flask import Flask, render_template, url_for, flash, redirect
-from flask_login import UserMixin
+from flask_login import UserMixin, LoginManager, logout_user, login_user, login_required, current_user
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, EmailField, TelField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired, EqualTo, Email, Length
-
+from flask_sqlalchemy import SQLAlchemy
 import psycopg2
 import pandas as pd
-import os
+from os import getenv
 
+# Create app
+app = Flask(__name__)
+app.config["SECRET_KEY"] = getenv("SECRET_KEY", default="secret_key_example")
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://admin:admin@localhost:5432/postgres"
+# db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 # Classes
+
+
+user: Dict[str, "User"] = {}
+
+
 class User(UserMixin):
-    def __init__(self, user_id=None, user_name=None, user_surname=None, user_email=None, user_password=None,
-                 user_role=None):
+    def __init__(self, user_id: int = None, user_name: str = None, user_surname: str = None, user_email: str = None,
+                 user_password: str = None, user_role: int = None):
         self.user_id = user_id
         self.user_name = user_name
         self.user_surname = user_surname
         self.user_email = user_email
         self.user_password = user_password
         self.user_role = user_role
-        # self.user_id = db.Column(db.Integer(), nullable=False, unique=True, primary_key=True, autoincrement=True)
-        # self.user_name = db.Column(db.String())
-        # self.user_surname = db.Column(db.String())
-        # self.user_email = db.Column(db.String())
-        # self.user_password = db.Column(db.String())
-        # self.user_role = db.Column(db.Integer())
+
+    @staticmethod
+    def get(user_id: str) -> Optional["User"]:
+        return user.get(user_id)
+
+    def __str__(self) -> str:
+        return f"<Id: {self.user_id}, Username: {self.user_name}, User Surname: {self.user_surname}, Email: {self.user_email}, Password: {self.user_password}, User role: {self.user_role}>"
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
     def is_authenticated(self):
         return True
@@ -94,17 +111,11 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Войти')
 
 
-# Create app
-app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-
-
 # Urls
 def connect_to_db():
     global conn, cursor
     conn = psycopg2.connect(
-        host="postgres",
+        host="localhost",
         port="5432",
         database="library",
         user='admin',
@@ -112,9 +123,15 @@ def connect_to_db():
     cursor = conn.cursor()
 
 
+@login_manager.user_loader
+def load_user(user_id: str) -> Optional[User]:
+    return User.get(user_id)
+
+
 @app.route('/')
 @app.route('/intro')
 def intro():
+    logging.info(current_user)
     return render_template("intro.html")
 
 
@@ -139,28 +156,46 @@ def login():
     if login_form.validate_on_submit():
         connect_to_db()
         cursor.execute(
-            f"SELECT people_id, people_email, people_password FROM lib_schema.people WHERE people_email='{login_form.people_email.data}';")
+            f"SELECT people_id, people_name, people_surname, people_role, people_email, people_password FROM lib_schema.people WHERE people_email='{login_form.people_email.data}';")
         query = cursor.fetchall()
-        if len(query) != 0:
-            user_data = query[0]
-            if login_form.people_password.data == user_data[2]:
+        logging.info(query)
+        if query:
+            id = query[0][0]
+            name = query[0][1]
+            surname = query[0][2]
+            role = query[0][3]
+            email = query[0][4]
+            password = query[0][5]
+            if login_form.people_password.data == password:
+                user = User(
+                    user_id=id,
+                    user_name=name,
+                    user_surname=surname,
+                    user_role=role,
+                    user_email=email,
+                    user_password=password
+                )
+                login_user(user)
+                logging.info(current_user)
                 logging.info(
                     f"Login successful, Email: {login_form.people_email.data}, Password: {login_form.people_password.data}")
-                return redirect('/main')
+                return redirect(url_for('main'))
             else:
                 logging.warning(
-                    f"Incorrect login Password, input: {login_form.people_password.data}, correct input: {user_data[2]}")
+                    f"Incorrect password for current user. Input: {login_form.people_password.data}, Correct input: {password}")
         else:
-            logging.warning("Incorrect login Email")
+            logging.warning("User does not exist")
     return render_template("login.html", form=login_form)
 
 
 @app.route('/main')
+@login_required
 def main():
     connect_to_db()
     cursor.execute(
         "SELECT * FROM lib_schema.book JOIN lib_schema.book_author ba on book.book_author = ba.author_id JOIN lib_schema.book_genre bg on book.book_genre = bg.genre_id JOIN lib_schema.book_lang bl on book.book_lang = bl.lang_id JOIN lib_schema.book_publisher bp on book.book_publisher = bp.publisher_id;")
     book_list = pd.DataFrame(cursor.fetchall()).drop([0, 2, 3, 4, 5, 12, 14, 15, 17, 19], axis=1)
+    logging.info(current_user)
     return render_template("main.html", book_list=book_list.values.tolist())
 
 

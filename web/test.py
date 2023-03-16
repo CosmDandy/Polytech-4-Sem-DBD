@@ -1,0 +1,88 @@
+from json import load
+from os import getenv
+from typing import Dict, Optional
+
+from flask import Flask, redirect, url_for
+from flask_login import (
+    LoginManager,
+    UserMixin,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
+
+app = Flask(__name__)
+app.config["SECRET_KEY"] = getenv("SECRET_KEY", default="secret_key_example")
+
+login_manager = LoginManager(app)
+
+users: Dict[str, "User"] = {}
+
+
+class User(UserMixin):
+    def __init__(self, id: str, username: str, email: str, password: str):
+        self.id = id
+        self.username = username
+        self.email = email
+        self.password = password
+
+    @staticmethod
+    def get(user_id: str) -> Optional["User"]:
+        return users.get(user_id)
+
+    def __str__(self) -> str:
+        return f"<Id: {self.id}, Username: {self.username}, Email: {self.email}>"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+with open("users.json") as file:
+    data = load(file)
+    for key in data:
+        users[key] = User(
+            id=1,
+            username=data[2]["username"],
+            email=data[3]["email"],
+            password=data[4]["password"],
+        )
+
+
+@login_manager.user_loader
+def load_user(user_id: str) -> Optional[User]:
+    return User.get(user_id)
+
+
+@app.get("/")
+def index():
+    username = "anonymous"
+    if current_user.is_authenticated:  # type: ignore
+        username = current_user.username  # type: ignore
+    return f"""
+        <h1>Hi {username}</h1>
+        <h3>Welcome to Flask Login without ORM!</h3>
+    """
+
+
+@app.get("/login/<id>/<password>")
+def login(id, password):
+    user = User.get(id)
+    print(user)
+    if user and user.password == password:
+        login_user(user)
+        return redirect(url_for("index"))
+    return "<h1>Invalid user id or password</h1>"
+
+
+@app.get("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("index"))
+
+
+@app.get("/settings")
+@login_required
+def settings():
+    return "<h1>Route protected</h1>"
