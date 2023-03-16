@@ -20,8 +20,6 @@ login_manager = LoginManager(app)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 # Classes
-
-
 user: Dict[str, "User"] = {}
 
 
@@ -115,7 +113,7 @@ class LoginForm(FlaskForm):
 def connect_to_db():
     global conn, cursor
     conn = psycopg2.connect(
-        host="localhost",
+        host="postgres",
         port="5432",
         database="library",
         user='admin',
