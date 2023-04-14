@@ -187,7 +187,7 @@ def login():
 
 
 @app.route('/main')
-@login_required
+# @login_required
 def main():
     connect_to_db()
     cursor.execute(
