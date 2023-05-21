@@ -44,19 +44,19 @@ services:
           memory: 150M
     depends_on:
       - web
-#  grafana:
-#    container_name: grafana
-#    image: grafana/grafana:latest
-#    ports:
-#      - '3000:3000'
-#    restart: unless-stopped
-#    volumes:
-#      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-#      - ./grafana-data:/var/lib/grafana
-#    depends_on:
-#      - ch-server
-#    networks:
-#      - clickhouse_net
+  #  grafana:
+  #    container_name: grafana
+  #    image: grafana/grafana:latest
+  #    ports:
+  #      - '3000:3000'
+  #    restart: unless-stopped
+  #    volumes:
+  #      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+  #      - ./grafana-data:/var/lib/grafana
+  #    depends_on:
+  #      - ch-server
+  #    networks:
+  #      - clickhouse_net
   #  redis:
   #    container_name: redis
   #    image: cosmdandy/arm32v6-redis:latest
@@ -144,7 +144,7 @@ services:
       - postgres_net
   pgadmin:
     container_name: pgadmin
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:latest
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
