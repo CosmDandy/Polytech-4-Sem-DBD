@@ -12,7 +12,8 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body>
-<div class="container-wrapper border-bottom mb-4" style="position: fixed; z-index: 100; width: 100%; background-color: white;">
+<div class="container-wrapper border-bottom mb-4"
+     style="position: fixed; z-index: 100; width: 100%; background-color: white;">
     <div class="container">
         <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3">
             <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
@@ -33,7 +34,7 @@
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
                 <input type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
             </form>
-            {% if current_user.is_authenticated%}
+            {% if current_user.is_authenticated %}
                 <div class="flex-shrink-0 dropdown">
                     <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        aria-expanded="false">
@@ -52,8 +53,12 @@
                 </div>
             {% else %}
                 <div class="text-end">
-                    <button type="button" class="btn btn-outline-primary me-2" onclick="document.location='login'">Войти</button>
-                    <button type="button" class="btn btn-primary" onclick="document.location='register'">Зарегистрироваться</button>
+                    <button type="button" class="btn btn-outline-primary me-2" onclick="document.location='login'">
+                        Войти
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="document.location='register'">
+                        Зарегистрироваться
+                    </button>
                 </div>
             {% endif %}
         </header>
