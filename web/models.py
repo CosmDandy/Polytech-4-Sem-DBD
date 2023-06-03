@@ -25,8 +25,8 @@ class Address(db.Model):
     id = db.Column('address_id', db.Integer, nullable=False, primary_key=True)
     title = db.Column('address_title', db.String(100), nullable=False)
     postcode = db.Column('address_postcode', db.String(100), nullable=False)
-    longitude = db.Column('address_long', db.Float, nullable=False)
-    latitude = db.Column('address_lat', db.Float, nullable=False)
+    latitude = db.Column('address_latitude', db.Float, nullable=False)
+    longitude = db.Column('address_longitude', db.Float, nullable=False)
 
 
 class Role(db.Model):
@@ -41,51 +41,71 @@ class Book(db.Model):
     __table_args__ = {'schema': 'lib_schema'}
     id = db.Column('book_id', db.Integer, nullable=False, primary_key=True)
     title = db.Column('book_title', db.String(100), nullable=False)
-    author = db.Column('book_author', db.Integer, nullable=False)
-    genre = db.Column('book_genre', db.Integer, nullable=False)
-    lang = db.Column('book_lang', db.Integer, nullable=False)
     publisher = db.Column('book_publisher', db.Integer, nullable=False)
     year = db.Column('book_publish_year', db.Integer, nullable=False)
     month = db.Column('book_publish_month', db.Integer, nullable=False)
     day = db.Column('book_publish_day', db.Integer, nullable=False)
     page_num = db.Column('book_page_num', db.Integer, nullable=False)
-    raiting = db.Column('book_raiting', db.Integer, nullable=False)
+    rating = db.Column('book_rating', db.Integer, nullable=False)
     reviews = db.Column('book_num_reviews', db.Integer, nullable=False)
 
 
 class Author(db.Model):
-    __tablename__ = 'author'
+    __tablename__ = 'book_author'
     __table_args__ = {'schema': 'lib_schema'}
     id = db.Column('author_id', db.Integer, nullable=False, primary_key=True)
     name = db.Column('author_name', db.String(100), nullable=False)
     sex = db.Column('author_sex', db.Boolean, nullable=False)
 
 
+class BookAuthor(db.Model):
+    __tablename__ = 'book_book_author'
+    __table_args__ = {'schema': 'lib_schema'}
+    book_book_id = db.Column("book_book_id", db.ForeignKey(Book.id, ondelete='CASCADE'), primary_key=True)
+    book_author_author_id = db.Column("book_author_author_id", db.ForeignKey(Author.id, ondelete='CASCADE'),
+                                      primary_key=True)
+
+
 class Genre(db.Model):
-    __tablename__ = 'genre'
+    __tablename__ = 'book_genre'
     __table_args__ = {'schema': 'lib_schema'}
     id = db.Column('genre_id', db.Integer, nullable=False, primary_key=True)
     title = db.Column('genre_title', db.String(100), nullable=False)
 
 
+class BookGenre(db.Model):
+    __tablename__ = 'book_book_genre'
+    __table_args__ = {'schema': 'lib_schema'}
+    book_id = db.Column('book_book_id', db.ForeignKey(Book.id, ondelete='CASCADE'), primary_key=True)
+    genre_id = db.Column('book_genre_genre_id', db.ForeignKey(Genre.id, ondelete='CASCADE'), primary_key=True)
+
+
 class Language(db.Model):
-    __tablename__ = 'language'
+    __tablename__ = 'book_lang'
     __table_args__ = {'schema': 'lib_schema'}
     id = db.Column('lang_id', db.Integer, nullable=False, primary_key=True)
     title = db.Column('lang_title', db.String(100), nullable=False)
 
 
+class BookLanguage(db.Model):
+    __tablename__ = 'book_book_lang'
+    __table_args__ = {'schema': 'lib_schema'}
+    book_id = db.Column('book_book_id', db.ForeignKey(Book.id, ondelete='CASCADE'), primary_key=True)
+    lang_id = db.Column('book_lang_lang_id', db.ForeignKey(Language.id, ondelete='CASCADE'), primary_key=True)
+
+
 class Publisher(db.Model):
-    __tablename__ = 'publisher'
+    __tablename__ = 'book_publisher'
     __table_args__ = {'schema': 'lib_schema'}
     id = db.Column('publisher_id', db.Integer, nullable=False, primary_key=True)
     title = db.Column('publisher_title', db.String(100), nullable=False)
+    desc = db.Column('publisher_desc', db.String(100), nullable=False)
 
 
 class Database:
     def __init__(
             self,
-            host='localhost',
+            host='postgres',
             port=5432,
             database='library',
             user='admin',

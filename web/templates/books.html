@@ -16,7 +16,7 @@
 {% block body %}
     <div class="container px-4 py-5" id="custom-cards">
         <h2 class="pb-2 border-bottom">Custom cards</h2>
-        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+        <div class="row row-cols-1 row-cols-lg-4 align-items-stretch g-4 py-5">
             {% for book in book_list %}
                 <div class="col">
                     <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
@@ -46,5 +46,34 @@
                 </div>
             {% endfor %}
         </div>
+        <nav class="h-100 d-flex align-items-center justify-content-center">
+            <ul class="pagination">
+
+                {% if curennt_page==1 %}
+                    <li class="page-item active"><a class="page-link" href="/books/{{ curennt_page }}">{{ curennt_page }}</a></li>
+                    <li class="page-item"><a class="page-link" href="/books/{{ curennt_page + 1 }}">{{ curennt_page + 1 }}</a></li>
+                    <li class="page-item"><a class="page-link" href="/books/{{ curennt_page + 2 }}">{{ curennt_page + 2 }}</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="/books/{{ curennt_page + 1 }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="/books/{{ curennt_page - 1 }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="/books/{{ curennt_page - 1 }}">{{ curennt_page - 1 }}</a></li>
+                    <li class="page-item active"><a class="page-link" href="/books/{{ curennt_page }}">{{ curennt_page }}</a></li>
+                    <li class="page-item"><a class="page-link" href="/books/{{ curennt_page + 1 }}">{{ curennt_page + 1 }}</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="/books/{{ curennt_page + 1 }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
     </div>
 {% endblock %}

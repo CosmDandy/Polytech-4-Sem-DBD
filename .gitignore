@@ -8,6 +8,7 @@ redis/data
 redis/redisinsight
 
 DataBase_Data/input
+DataBase_Data/output
 DataBase_Data/archive
 .DS_Store
 
