@@ -14,77 +14,122 @@
     </style>
 {% endblock %}
 {% block body %}
-    <div class="container px-4 py-5" id="custom-cards">
-        <h2 class="pb-2 border-bottom">Custom cards</h2>
-        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-3 py-5">
-            {% for book in book_list %}
-                <div class="col">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
-                         style="background-image: url('https://getbootstrap.com/docs/5.3/examples/features/unsplash-photo-1.jpg');" onclick="location.href='/books/book/{{ book[0] }}'">
-                        <div class="d-flex flex-column h-100 p-4 pb-3 text-white text-shadow-1">
-                            <h5 class=" mb-4 display-8 lh-1 ">{{ book[1] }}</h5>
-                            <ul class="d-flex list-unstyled mt-auto">
-                                <li class="me-auto">
-                                    <small>Авторы: {{ ", ".join(book[8]) }}</small>
-                                </li>
-                            </ul>
-                            <ul class="d-flex list-unstyled mt-auto">
-                                <li class="d-flex align-items-center me-3">
-                                    <small>Жанры: {{ ", ".join(book[9]) }}</small>
-                                </li>
-                            </ul>
-                            <ul class="d-flex list-unstyled mt-auto">
-                                <li class="d-flex align-items-center">
-                                    <small>Языки: {{ ", ".join(book[10]) }}</small>
-                                </li>
-                            </ul>
-                            <ul class="d-flex list-unstyled mt-auto">
-                                <li class="d-flex align-items-start me-3">
-                                    <small>Дата издания: {{ book[6] }}/{{ book[5] }}/{{ book[4] }}</small>
-                                </li>
-                                <li class="d-flex align-items-end">
-                                    <small>Рейтинг: {{ book[2] }}</small>
-                                </li>
-                            </ul>
+    <main>
+        <div class="container py-4 border-bottom">
+            <div class="p-5 mb-4 bg-body-tertiary rounded-3">
+                <div class="container-fluid py-5">
+                    <h1 class="display-5 fw-bold">Библиотека</h1>
+                    <p class="col-md-8 fs-4">Добро пожаловать на страницу Библиотеки!
+                        Здесь вы найдете все, что нужно знать о нашей уникальной и обширной библиотечной коллекции, а
+                        также о сервисах, которые мы предоставляем. Наша коллекция книг насчитывает тысячи томов,
+                        охватывающих различные тематики: от классической
+                        литературы и современных бестселлеров до научных работ и справочных материалов. У нас есть книги
+                        на разных языках, чтобы удовлетворить интересы и потребности каждого посетителя.</p>
+                    <h4 class="py-4 display-7 fw-bold">Фильтр книг</h4>
+                    <form action="" method="post">
+                        {{ form.csrf_token }}
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                {{ form.author(class="form-select") }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.genre(class="form-select") }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.language(class="form-select") }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.publisher(class="form-select") }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.rating_bottom(class="form-control", placeholder="Рейтинг от") }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.rating_top(class="form-control", placeholder="Рейтинг до") }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.search(class="form-control", placeholder="Ключевые фразы") }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.submit(class="btn btn-primary w-100") }}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="container px-4" id="custom-cards">
+            <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-3 py-5">
+                {% for book in book_list %}
+                    <div class="col">
+                        <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
+                             style="background-image: linear-gradient({{ deg[1] }}deg, {{ color1[1] }}, {{ color2[1] }});"
+                             onclick="location.href='/books/book/{{ book[0] }}'">
+                            <div class="d-flex flex-column h-100 p-4 pb-3 text-white text-shadow-1">
+                                <h5 class="mb-4 display-8 lh-1 ">{{ book[1] }}</h5>
+                                <ul class="d-flex list-unstyled mt-auto">
+                                    <li class="me-auto">
+                                        <small>Авторы: {{ ", ".join(book[8]) }}</small>
+                                    </li>
+                                </ul>
+                                <ul class="d-flex list-unstyled mt-auto">
+                                    <li class="d-flex align-items-center me-3">
+                                        <small>Жанры: {{ ", ".join(book[9]) }}</small>
+                                    </li>
+                                </ul>
+                                <ul class="d-flex list-unstyled mt-auto">
+                                    <li class="d-flex align-items-center">
+                                        <small>Языки: {{ ", ".join(book[10]) }}</small>
+                                    </li>
+                                </ul>
+                                <ul class="d-flex list-unstyled mt-auto">
+                                    <li class="d-flex align-items-start me-3">
+                                        <small>Дата издания: {{ book[6] }}/{{ book[5] }}/{{ book[4] }}</small>
+                                    </li>
+                                    <li class="d-flex align-items-end">
+                                        <small>Рейтинг: {{ book[2] }}</small>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-        <nav class="h-100 d-flex align-items-center justify-content-center">
-            <ul class="pagination">
+                {% endfor %}
+            </div>
+            <nav class="h-100 d-flex align-items-center justify-content-center">
+                <ul class="pagination">
 
-                {% if curennt_page==1 %}
-                    <li class="page-item active"><a class="page-link"
-                                                    href="/books/{{ curennt_page }}">{{ curennt_page }}</a></li>
-                    <li class="page-item"><a class="page-link"
-                                             href="/books/{{ curennt_page + 1 }}">{{ curennt_page + 1 }}</a></li>
-                    <li class="page-item"><a class="page-link"
-                                             href="/books/{{ curennt_page + 2 }}">{{ curennt_page + 2 }}</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="/books/{{ last_page }}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="page-item">
-                        <a class="page-link" href="/books" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link"
-                                             href="/books/{{ curennt_page - 1 }}">{{ curennt_page - 1 }}</a></li>
-                    <li class="page-item active"><a class="page-link"
-                                                    href="/books/{{ curennt_page }}">{{ curennt_page }}</a></li>
-                    <li class="page-item"><a class="page-link"
-                                             href="/books/{{ curennt_page + 1 }}">{{ curennt_page + 1 }}</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="/books/{{ last_page }}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
-    </div>
+                    {% if curennt_page==1 %}
+                        <li class="page-item active"><a class="page-link"
+                                                        href="/books/{{ curennt_page }}">{{ curennt_page }}</a></li>
+                        <li class="page-item"><a class="page-link"
+                                                 href="/books/{{ curennt_page + 1 }}">{{ curennt_page + 1 }}</a></li>
+                        <li class="page-item"><a class="page-link"
+                                                 href="/books/{{ curennt_page + 2 }}">{{ curennt_page + 2 }}</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="/books/{{ last_page }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="/books" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link"
+                                                 href="/books/{{ curennt_page - 1 }}">{{ curennt_page - 1 }}</a></li>
+                        <li class="page-item active"><a class="page-link"
+                                                        href="/books/{{ curennt_page }}">{{ curennt_page }}</a></li>
+                        <li class="page-item"><a class="page-link"
+                                                 href="/books/{{ curennt_page + 1 }}">{{ curennt_page + 1 }}</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="/books/{{ last_page }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </main>
 {% endblock %}
