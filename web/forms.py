@@ -7,7 +7,7 @@ class RegisterForm(FlaskForm):
     people_name = StringField('Имя', validators=[DataRequired()])
     people_surname = StringField('Фамилия', validators=[DataRequired()])
     people_patronymic = StringField('Отчество', validators=[DataRequired()])
-    people_sex = SelectField(choices=[('', 'Пол'), ('1', 'Мужской'), ('2', 'Женский')], validators=[DataRequired()])
+    people_sex = SelectField(choices=[('', 'Пол'), (True, 'Мужской'), (False, 'Женский')], validators=[DataRequired()])
     people_address = StringField('Адрес', validators=[DataRequired()])
     people_tel_num = TelField('Номер телефона', validators=[DataRequired()])
     people_pass_num = StringField('Номер паспорта', validators=[DataRequired()])

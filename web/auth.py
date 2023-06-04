@@ -21,14 +21,14 @@ def register():
             f"INSERT INTO lib_schema.address(address_title, address_postcode, address_latitude, address_longitude) VALUES ('{register_form.people_address.data}', '{random.randint(1, 200000)}', {random.randint(0, 180)}, {random.randint(0, 180)}) RETURNING address_id;")
         people_address_id = int(str(database.fetchall()[0])[1:-2])
         database.execute(
-            f"INSERT INTO lib_schema.people(people_name, people_surname, people_patronymic, people_sex, people_address,people_tel_num, people_pass_num, people_email, people_password, people_role) VALUES ('{register_form.people_name.data}', '{register_form.people_surname.data}', '{register_form.people_patronymic.data}', {register_form.people_sex.data}, {people_address_id},{register_form.people_tel_num.data}, {register_form.people_pass_num.data}, '{register_form.people_email.data}', '{generate_password_hash(register_form.people_password.data, method='sha256')}', {register_form.people_role});")
+            f"INSERT INTO lib_schema.people(people_name, people_surname, people_patronymic, people_sex, people_address, people_tel_num, people_pass_num, people_email, people_password, people_role) VALUES ('{register_form.people_name.data}', '{register_form.people_surname.data}', '{register_form.people_patronymic.data}', {register_form.people_sex.data}, {people_address_id}, {register_form.people_tel_num.data}, {register_form.people_pass_num.data}, '{register_form.people_email.data}', '{generate_password_hash(register_form.people_password.data, method='sha256')}', {register_form.people_role});")
         database.commit()
 
         email = register_form.people_email.data
 
         user = User.query.filter_by(email=email).first()
         login_user(user)
-        return redirect('/w')
+        return redirect('/')
     return render_template("register.html", form=register_form)
 
 

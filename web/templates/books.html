@@ -16,29 +16,34 @@
 {% block body %}
     <div class="container px-4 py-5" id="custom-cards">
         <h2 class="pb-2 border-bottom">Custom cards</h2>
-        <div class="row row-cols-1 row-cols-lg-4 align-items-stretch g-4 py-5">
+        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-3 py-5">
             {% for book in book_list %}
                 <div class="col">
                     <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
-                         style="background-image: url('https://getbootstrap.com/docs/5.3/examples/features/unsplash-photo-1.jpg');">
-                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h5 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">{{ book[0] }}</h5>
+                         style="background-image: url('https://getbootstrap.com/docs/5.3/examples/features/unsplash-photo-1.jpg');" onclick="location.href='/books/book/{{ book[0] }}'">
+                        <div class="d-flex flex-column h-100 p-4 pb-3 text-white text-shadow-1">
+                            <h5 class=" mb-4 display-8 lh-1 ">{{ book[1] }}</h5>
                             <ul class="d-flex list-unstyled mt-auto">
                                 <li class="me-auto">
-                                    <img src="https://github.com/twbs.png" alt="Bootstrap" width="32" height="32"
-                                         class="rounded-circle border border-white">
+                                    <small>Авторы: {{ ", ".join(book[8]) }}</small>
                                 </li>
+                            </ul>
+                            <ul class="d-flex list-unstyled mt-auto">
                                 <li class="d-flex align-items-center me-3">
-                                    <svg class="bi me-2" width="1em" height="1em">
-                                        <use xlink:href="#geo-fill"></use>
-                                    </svg>
-                                    <small>{{ book[7] }} - {{ book[8] }}</small>
+                                    <small>Жанры: {{ ", ".join(book[9]) }}</small>
                                 </li>
+                            </ul>
+                            <ul class="d-flex list-unstyled mt-auto">
                                 <li class="d-flex align-items-center">
-                                    <svg class="bi me-2" width="1em" height="1em">
-                                        <use xlink:href="#calendar3"></use>
-                                    </svg>
-                                    <small>{{ book[3] }}/{{ book[2] }}/{{ book[1] }}</small>
+                                    <small>Языки: {{ ", ".join(book[10]) }}</small>
+                                </li>
+                            </ul>
+                            <ul class="d-flex list-unstyled mt-auto">
+                                <li class="d-flex align-items-start me-3">
+                                    <small>Дата издания: {{ book[6] }}/{{ book[5] }}/{{ book[4] }}</small>
+                                </li>
+                                <li class="d-flex align-items-end">
+                                    <small>Рейтинг: {{ book[2] }}</small>
                                 </li>
                             </ul>
                         </div>
@@ -50,25 +55,31 @@
             <ul class="pagination">
 
                 {% if curennt_page==1 %}
-                    <li class="page-item active"><a class="page-link" href="/books/{{ curennt_page }}">{{ curennt_page }}</a></li>
-                    <li class="page-item"><a class="page-link" href="/books/{{ curennt_page + 1 }}">{{ curennt_page + 1 }}</a></li>
-                    <li class="page-item"><a class="page-link" href="/books/{{ curennt_page + 2 }}">{{ curennt_page + 2 }}</a></li>
+                    <li class="page-item active"><a class="page-link"
+                                                    href="/books/{{ curennt_page }}">{{ curennt_page }}</a></li>
+                    <li class="page-item"><a class="page-link"
+                                             href="/books/{{ curennt_page + 1 }}">{{ curennt_page + 1 }}</a></li>
+                    <li class="page-item"><a class="page-link"
+                                             href="/books/{{ curennt_page + 2 }}">{{ curennt_page + 2 }}</a></li>
                     <li class="page-item">
-                        <a class="page-link" href="/books/{{ curennt_page + 1 }}" aria-label="Next">
+                        <a class="page-link" href="/books/{{ last_page }}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
                 {% else %}
                     <li class="page-item">
-                        <a class="page-link" href="/books/{{ curennt_page - 1 }}" aria-label="Previous">
+                        <a class="page-link" href="/books" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="/books/{{ curennt_page - 1 }}">{{ curennt_page - 1 }}</a></li>
-                    <li class="page-item active"><a class="page-link" href="/books/{{ curennt_page }}">{{ curennt_page }}</a></li>
-                    <li class="page-item"><a class="page-link" href="/books/{{ curennt_page + 1 }}">{{ curennt_page + 1 }}</a></li>
+                    <li class="page-item"><a class="page-link"
+                                             href="/books/{{ curennt_page - 1 }}">{{ curennt_page - 1 }}</a></li>
+                    <li class="page-item active"><a class="page-link"
+                                                    href="/books/{{ curennt_page }}">{{ curennt_page }}</a></li>
+                    <li class="page-item"><a class="page-link"
+                                             href="/books/{{ curennt_page + 1 }}">{{ curennt_page + 1 }}</a></li>
                     <li class="page-item">
-                        <a class="page-link" href="/books/{{ curennt_page + 1 }}" aria-label="Next">
+                        <a class="page-link" href="/books/{{ last_page }}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

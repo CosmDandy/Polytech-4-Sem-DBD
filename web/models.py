@@ -41,6 +41,7 @@ class Book(db.Model):
     __table_args__ = {'schema': 'lib_schema'}
     id = db.Column('book_id', db.Integer, nullable=False, primary_key=True)
     title = db.Column('book_title', db.String(100), nullable=False)
+    desc = db.Column('book_desc', db.String(100), nullable=False)
     publisher = db.Column('book_publisher', db.Integer, nullable=False)
     year = db.Column('book_publish_year', db.Integer, nullable=False)
     month = db.Column('book_publish_month', db.Integer, nullable=False)

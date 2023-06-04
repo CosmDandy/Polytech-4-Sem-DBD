@@ -23,7 +23,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 300M
+          memory: 500M
     depends_on:
       - postgres
     command: flask run
@@ -44,7 +44,7 @@ services:
       resources:
         limits:
           cpus: '0.3'
-          memory: 150M
+          memory: 400M
     depends_on:
       - web
   #  grafana:
@@ -132,6 +132,7 @@ services:
       PGDATA: "/var/lib/postgresql/data/pgdata"
       POSTGRES_MULTIPLE_EXTENSIONS: "postgis,hstore,postgis_topology,postgis_raster,pgrouting"
       RUN_AS_ROOT: "true"
+    shm_size: 1gb
     volumes:
       - ./postgres/SQL:/docker-entrypoint-initdb.d
       - ./postgres/data:/var/lib/postgresql/data
