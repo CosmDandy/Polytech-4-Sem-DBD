@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Books{% endblock %}
+{% block body %}
+{#    <div class="d-flex gap-2 justify-content-center py-2">#}
+{#        <button class="btn btn-primary rounded-pill px-3" type="button" onclick="location.href='/admin/User'">Books</button>#}
+{#        <button class="btn btn-secondary rounded-pill px-3" type="button" onclick="location.href='/admin/PeopleType'">#}
+{#            PeopleType#}
+{#        </button>#}
+{#    </div>#}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">title</th>
+            <th scope="col">desc</th>
+            <th scope="col">publisher</th>
+            <th scope="col">publish_year</th>
+            <th scope="col">publish_month</th>
+            <th scope="col">publish_day</th>
+            <th scope="col">page_num</th>
+            <th scope="col">rating</th>
+            <th scope="col">num_reviews</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for book in books_list %}
+            <tr>
+                <th scope="row">{{ user.id }}</th>
+                <td>{{ user.type }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.surname }}</td>
+                <td>{{ user.patronymic }}</td>
+                <td>{{ user.sex }}</td>
+                <td>{{ user.address }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    <form action="" method="post" style="float: right">
+                        {{ delete_form.csrf_token }}
+                        {{ delete_form.delete_table(value='User') }}
+                        {{ delete_form.delete_id(value=user.id) }}
+                        {{ delete_form.delete(class="btn btn-outline-danger") }}
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <form action="" method="post">
+        {{ form.csrf_token }}
+        <table class="table">
+            <tbody>
+            <tr>
+                <td>{{ form.people_type(class="form-control", placeholder="type") }}</td>
+                <td>{{ form.people_role(class="form-control", placeholder="role") }}</td>
+                <td>{{ form.people_name(class="form-control", placeholder="name") }}</td>
+                <td>{{ form.people_surname(class="form-control", placeholder="surname") }}</td>
+                <td>{{ form.people_patronymic(class="form-control", placeholder="patronymic") }}</td>
+                <td>{{ form.people_sex(class="form-control", placeholder="sex") }}</td>
+                <td>{{ form.people_address(class="form-control", placeholder="address") }}</td>
+                <td>{{ form.people_email(class="form-control", placeholder="email") }}</td>
+                <td>{{ form.people_password(class="form-control", placeholder="password") }}</td>
+            </tr>
+            </tbody>
+        </table>
+        {{ form.submit(class="w-100 btn btn-outline-primary") }}
+    </form>
+{% endblock %}
