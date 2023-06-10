@@ -99,14 +99,32 @@ class AuthorForm(FlaskForm):
     submit = SubmitField('Добавить автора')
 
 
+class BookAuthorForm(FlaskForm):
+    book_id = QuerySelectField(query_factory=lambda: Book.query.order_by(Book.id).all()
+                               , get_label="title", allow_blank=True,
+                               blank_text='Книга')
+    author_id = QuerySelectField(query_factory=lambda: Author.query.order_by(Author.id).all()
+                                 , get_label="name", allow_blank=True,
+                                 blank_text='Автор')
+    submit = SubmitField('Добавить')
+
+
 class GenreForm(FlaskForm):
     genre_title = StringField('Жанр', validators=[DataRequired()])
     submit = SubmitField('Добавить жанр')
 
 
+class BookGenreForm(FlaskForm):
+    submit = SubmitField('Добавить')
+
+
 class LanguageForm(FlaskForm):
     lang_title = StringField('Язык', validators=[DataRequired()])
     submit = SubmitField('Добавить язык')
+
+
+class BookLanguageForm(FlaskForm):
+    submit = SubmitField('Добавить')
 
 
 class PublisherForm(FlaskForm):
@@ -124,7 +142,7 @@ class AccountLoginForm(FlaskForm):
 class AccountPasswordForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired()])
     password_confirm = PasswordField('Подтвердите пароль',
-                                            validators=[DataRequired(), EqualTo('people_password')])
+                                     validators=[DataRequired(), EqualTo('people_password')])
     submit = SubmitField('Изменить')
 
 

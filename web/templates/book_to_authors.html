@@ -1,0 +1,44 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}
+
+{% endblock %}
+{% block body %}
+    <form action="" method="post">
+        {{ form.csrf_token }}
+        <table class="table" style="width: 100%">
+            <tbody>
+            <tr>
+                <td>{{ form.book_id(class="form-control", placeholder="ID книги") }}</td>
+                <td>{{ form.author_id(class="form-control", placeholder="ID автора") }}</td>
+            </tr>
+            </tbody>
+        </table>
+        {{ form.submit(class="w-100 btn btn-outline-primary") }}
+    </form>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">book</th>
+            <th scope="col">author</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for book_to_authors in book_to_authors_list %}
+            <tr>
+                <td>{{ book_to_authors.book_book_id }}</td>
+                <td>{{ book_to_authors.book_author_author_id }}</td>
+                <td>
+                    <form action="" method="post" style="float: right">
+                        {{ delete_form.csrf_token }}
+                        {{ delete_form.delete_table(value='book_to_authors') }}
+                        {{ delete_form.delete_id(value=book_to_authors.id) }}
+                        {{ delete_form.delete(class="btn btn-outline-danger") }}
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

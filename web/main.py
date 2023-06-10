@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash
 
 from . import db
 from .forms import BookSearchForm, BookForm, UserForm, DeleteForm, ChangeForm, RoleForm, AuthorForm, LanguageForm, \
-    GenreForm, PublisherForm, AccountLoginForm, AccountPasswordForm
+    GenreForm, PublisherForm, AccountLoginForm, AccountPasswordForm, BookAuthorForm
 from .models import Book, Author, Genre, Language, Publisher, BookAuthor, BookGenre, BookLanguage, User, Role, Address
 
 main = Blueprint('main', __name__)
@@ -218,13 +218,7 @@ def admin_users():
         return redirect('/admin/users')
 
     change_form = ChangeForm()
-    if change_form.validate_on_submit():
-        try:
-            change(change_form.change_table.data, change_form.change_id.data)
-        except Exception as e:
-            flash(f'{e}')
-        return redirect('/admin/users')
-    return render_template("admin_users.html", form=form, users_list=users_list, change_form=change_form,
+    return render_template("admin_users.html", form=form, users_list=users_list,
                            delete_form=delete_form)
 
 
@@ -256,8 +250,10 @@ def admin_roles():
 def admin_books():
     books_list = db.session.query(
         Book.id, Book.title, Book.desc, Book.reviews, func.array_agg(func.distinct(Author.name)).label('author'),
-        func.array_agg(func.distinct(Genre.title)).label('genre'), func.array_agg(func.distinct(Language.title)).label('language'), Publisher.title,
-        Book.year, Book.month, Book.day, Book.page_num, Book.rating, Book.page_num, Book.reviews, Publisher.title.label('publisher')) \
+        func.array_agg(func.distinct(Genre.title)).label('genre'),
+        func.array_agg(func.distinct(Language.title)).label('language'), Publisher.title,
+        Book.year, Book.month, Book.day, Book.page_num, Book.rating, Book.page_num, Book.reviews,
+        Publisher.title.label('publisher')) \
         .join(BookAuthor, BookAuthor.book_book_id == Book.id) \
         .join(Author, Author.id == BookAuthor.book_author_author_id) \
         .join(BookGenre, BookGenre.book_id == Book.id) \
@@ -287,7 +283,7 @@ def admin_authors():
     if form.validate_on_submit():
         new_row = Author(
             name=form.author_name.data,
-            sex= True if form.author_sex.data else False
+            sex=True if form.author_sex.data else False
         )
         db.session.add(new_row)
         db.session.commit()
@@ -301,6 +297,31 @@ def admin_authors():
             flash(f'{e}')
         return redirect('/admin/authors')
     return render_template("admin_authors.html", authors_list=authors_list, form=form, delete_form=delete_form)
+
+
+@main.route('/admin/book_to_authors', methods=['GET', 'POST'])
+@login_required
+def book_to_authors():
+    book_to_authors_list = BookAuthor.query.limit(100)
+    form = BookAuthorForm()
+    if form.validate_on_submit():
+        new_row = BookAuthor(
+            book_book_id=form.book_id.data.id,
+            book_author_author_id=form.author_id.data.id
+        )
+        db.session.add(new_row)
+        db.session.commit()
+        return redirect('/admin/book_to_authors')
+
+    delete_form = DeleteForm()
+    if delete_form.validate_on_submit():
+        try:
+            delete(delete_form.delete_table.data, delete_form.delete_id.data)
+        except Exception as e:
+            flash(f'{e}')
+        return redirect('/admin/book_to_authors')
+    return render_template("book_to_authors.html", book_to_authors_list=book_to_authors_list, form=form,
+                           delete_form=delete_form)
 
 
 @main.route('/admin/genres', methods=['GET', 'POST'])
