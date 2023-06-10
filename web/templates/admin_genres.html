@@ -1,0 +1,43 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}
+
+{% endblock %}
+{% block body %}
+    <form action="" method="post">
+        {{ form.csrf_token }}
+        <table class="table" style="width: 100%">
+            <tbody>
+            <tr>
+                <td>{{ form.genre_title(class="form-control") }}</td>
+            </tr>
+            </tbody>
+        </table>
+        {{ form.submit(class="w-100 btn btn-outline-primary") }}
+    </form>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">title</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for genre in genre_list %}
+            <tr>
+                <th scope="row">{{ genre.id }}</th>
+                <td>{{ genre.title }}</td>
+                <td>
+                    <form action="" method="post" style="float: right">
+                        {{ delete_form.csrf_token }}
+                        {{ delete_form.delete_table(value='genre') }}
+                        {{ delete_form.delete_id(value=genre.id) }}
+                        {{ delete_form.delete(class="btn btn-outline-danger") }}
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

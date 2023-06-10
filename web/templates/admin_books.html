@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_admin.html' %}
 
 {% block title %}Books{% endblock %}
 {% block body %}
@@ -14,32 +14,40 @@
             <th scope="col">id</th>
             <th scope="col">title</th>
             <th scope="col">desc</th>
+            <th scope="col">author</th>
+            <th scope="col">genre</th>
+            <th scope="col">language</th>
             <th scope="col">publisher</th>
             <th scope="col">publish_year</th>
             <th scope="col">publish_month</th>
             <th scope="col">publish_day</th>
             <th scope="col">page_num</th>
             <th scope="col">rating</th>
-            <th scope="col">num_reviews</th>
+            <th scope="col">reviews</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
         {% for book in books_list %}
             <tr>
-                <th scope="row">{{ user.id }}</th>
-                <td>{{ user.type }}</td>
-                <td>{{ user.role }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.surname }}</td>
-                <td>{{ user.patronymic }}</td>
-                <td>{{ user.sex }}</td>
-                <td>{{ user.address }}</td>
-                <td>{{ user.email }}</td>
+                <th scope="row">{{ book.id }}</th>
+                <td>{{ book.title }}</td>
+                <td>{{ book.desc }}</td>
+                <td>{{ ", ".join(book.author) }}</td>
+                <td>{{ ", ".join(book.genre) }}</td>
+                <td>{{ ", ".join(book.language) }}</td>
+                <td>{{ book.publisher }}</td>
+                <td>{{ book.year }}</td>
+                <td>{{ book.month }}</td>
+                <td>{{ book.day }}</td>
+                <td>{{ book.page_num }}</td>
+                <td>{{ book.rating }}</td>
+                <td>{{ book.reviews }}</td>
                 <td>
                     <form action="" method="post" style="float: right">
                         {{ delete_form.csrf_token }}
-                        {{ delete_form.delete_table(value='User') }}
-                        {{ delete_form.delete_id(value=user.id) }}
+                        {{ delete_form.delete_table(value='book') }}
+                        {{ delete_form.delete_id(value=book.id) }}
                         {{ delete_form.delete(class="btn btn-outline-danger") }}
                     </form>
                 </td>
@@ -52,15 +60,18 @@
         <table class="table">
             <tbody>
             <tr>
-                <td>{{ form.people_type(class="form-control", placeholder="type") }}</td>
-                <td>{{ form.people_role(class="form-control", placeholder="role") }}</td>
-                <td>{{ form.people_name(class="form-control", placeholder="name") }}</td>
-                <td>{{ form.people_surname(class="form-control", placeholder="surname") }}</td>
-                <td>{{ form.people_patronymic(class="form-control", placeholder="patronymic") }}</td>
-                <td>{{ form.people_sex(class="form-control", placeholder="sex") }}</td>
-                <td>{{ form.people_address(class="form-control", placeholder="address") }}</td>
-                <td>{{ form.people_email(class="form-control", placeholder="email") }}</td>
-                <td>{{ form.people_password(class="form-control", placeholder="password") }}</td>
+                <td>{{ form.book_title(class="form-control", placeholder="type") }}</td>
+                <td>{{ form.book_desc(class="form-control", placeholder="role") }}</td>
+                <td>{{ form.book_publisher(class="form-control", placeholder="name") }}</td>
+                <td>{{ form.book_author(class="form-control", placeholder="surname") }}</td>
+                <td>{{ form.book_genre(class="form-control", placeholder="patronymic") }}</td>
+                <td>{{ form.book_language(class="form-control", placeholder="sex") }}</td>
+                <td>{{ form.book_publish_year(class="form-control", placeholder="address") }}</td>
+                <td>{{ form.book_publish_month(class="form-control", placeholder="address") }}</td>
+                <td>{{ form.book_publish_day(class="form-control", placeholder="address") }}</td>
+                <td>{{ form.book_page_num(class="form-control", placeholder="email") }}</td>
+                <td>{{ form.book_rating(class="form-control", placeholder="password") }}</td>
+                <td>{{ form.book_num_reviews(class="form-control", placeholder="password") }}</td>
             </tr>
             </tbody>
         </table>

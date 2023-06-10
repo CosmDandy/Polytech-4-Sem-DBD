@@ -1,58 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'base_admin.html' %}
 
 {% block title %}Users{% endblock %}
 {% block body %}
-    {#    <div class="d-flex gap-2 justify-content-center py-2">#}
-    {#        <button class="btn btn-primary rounded-pill px-3" type="button" onclick="location.href='/admin/User'">Books</button>#}
-    {#        <button class="btn btn-secondary rounded-pill px-3" type="button" onclick="location.href='/admin/PeopleType'">#}
-    {#            PeopleType#}
-    {#        </button>#}
-    {#    </div>#}
-
-    {#    <table class="table">#}
-    {#        <thead>#}
-    {#        <tr>#}
-    {#            people_id#}
-    {#            people_name#}
-    {#            people_surname#}
-    {#            people_patronymic#}
-    {#            people_sex#}
-    {#            people_address#}
-    {#            people_tel_num#}
-    {#            people_pass_num#}
-    {#            people_email#}
-    {#            people_password#}
-    {#            people_role#}
-    {#        </tr>#}
-    {#        </thead>#}
-    {#        <tbody>#}
-    {#        {% for book in books_list %}#}
-    {#            <tr>#}
-    {#                <th scope="row">{{ user.id }}</th>#}
-    {#                <td>{{ user.type }}</td>#}
-    {#                <td>{{ user.role }}</td>#}
-    {#                <td>{{ user.name }}</td>#}
-    {#                <td>{{ user.surname }}</td>#}
-    {#                <td>{{ user.patronymic }}</td>#}
-    {#                <td>{{ user.sex }}</td>#}
-    {#                <td>{{ user.address }}</td>#}
-    {#                <td>{{ user.email }}</td>#}
-    {#                <td>#}
-    {#                    <form action="" method="post" style="float: right">#}
-    {#                        {{ delete_form.csrf_token }}#}
-    {#                        {{ delete_form.delete_table(value='User') }}#}
-    {#                        {{ delete_form.delete_id(value=user.id) }}#}
-    {#                        {{ delete_form.delete(class="btn btn-outline-danger") }}#}
-    {#                    </form>#}
-    {#                </td>#}
-    {#            </tr>#}
-    {#        {% endfor %}#}
-    {#        </tbody>#}
-    {#    </table>#}
-
     <form action="" method="post">
         {{ form.csrf_token }}
-        <table class="table">
+        <table class="table" style="width: 100%">
             <tbody>
             <tr>
                 <td>{{ form.people_name(class="form-control", placeholder="name") }}</td>
@@ -70,4 +22,54 @@
         </table>
         {{ form.submit(class="w-100 btn btn-outline-primary") }}
     </form>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">name</th>
+            <th scope="col">surname</th>
+            <th scope="col">patronymic</th>
+            <th scope="col">sex</th>
+            <th scope="col">address</th>
+            <th scope="col">tel_num</th>
+            <th scope="col">pass_num</th>
+            <th scope="col">email</th>
+            <th scope="col">role</th>
+            {#            <th scope="col"></th>#}
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users_list %}
+            <tr>
+                <th scope="row">{{ user.id }}</th>
+                <td>{{ user.name }}</td>
+                <td>{{ user.surname }}</td>
+                <td>{{ user.patronymic }}</td>
+                <td>{{ 'Мужской' if user.sex else 'Женский' }}</td>
+                <td>{{ user.address }}</td>
+                <td>{{ user.tel_num }}</td>
+                <td>{{ user.pass_num }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                {#                <td>#}
+                {#                    <form action="" method="post" style="float: right">#}
+                {#                        {{ change_form.csrf_token }}#}
+                {#                        {{ change_form.change_table(value='User') }}#}
+                {#                        {{ change_form.change_id(value=user.id) }}#}
+                {#                        {{ change_form.change(class="btn btn-outline-primary") }}#}
+                {#                    </form>#}
+                {#                </td>#}
+                <td>
+                    <form action="" method="post" style="float: right">
+                        {{ delete_form.csrf_token }}
+                        {{ delete_form.delete_table(value='user') }}
+                        {{ delete_form.delete_id(value=user.id) }}
+                        {{ delete_form.delete(class="btn btn-outline-danger") }}
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
