@@ -115,6 +115,19 @@ class PublisherForm(FlaskForm):
     submit = SubmitField('Добавить издателя')
 
 
+# Account
+class AccountLoginForm(FlaskForm):
+    email = EmailField('Email', validators=[DataRequired()])
+    submit = SubmitField('Изменить')
+
+
+class AccountPasswordForm(FlaskForm):
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    password_confirm = PasswordField('Подтвердите пароль',
+                                            validators=[DataRequired(), EqualTo('people_password')])
+    submit = SubmitField('Изменить')
+
+
 # Change
 class ChangeForm(FlaskForm):
     change_table = HiddenField("Hidden table name")

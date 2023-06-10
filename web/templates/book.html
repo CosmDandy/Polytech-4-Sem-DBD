@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Main{% endblock %}
+{% block extra_head %}
+    <style>
+        .text-shadow-1 {
+            text-shadow: 0 .125rem .25rem rgba(0, 0, 0, .25);
+        }
+
+        .card-cover {
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+<main role="main" class="container">
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+        <h3 class="border-bottom border-gray pb-2 mb-0">{{ book[1] }}</h3>
+        <div class="media text-muted pt-3">
+            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <strong class="d-block text-gray-dark">Description</strong>
+                {{ book[2] }}
+            </p>
+        </div>
+        <div class="media text-muted pt-3">
+            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <strong class="d-block text-gray-dark">Дата публикации</strong>
+                {{ book[5] }}/{{ book[6] }}/{{ book[7] }}
+            </p>
+        </div>
+        <div class="media text-muted pt-3">
+            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <strong class="d-block text-gray-dark">Авторы</strong>
+                {{ ", ".join(book[9]) }}
+            </p>
+        </div>
+        <div class="media text-muted pt-3">
+            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <strong class="d-block text-gray-dark">Жанры</strong>
+                {{ ", ".join(book[10]) }}
+            </p>
+        </div>
+        <div class="media text-muted pt-3">
+            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <strong class="d-block text-gray-dark">Языки</strong>
+                {{ ", ".join(book[11]) }}
+            </p>
+        </div>
+        <div class="media text-muted pt-3">
+            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <strong class="d-block text-gray-dark">Издатель</strong>
+                {{ book[12] }}
+            </p>
+        </div>
+        <div class="media text-muted pt-3">
+            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <strong class="d-block text-gray-dark">Описание издателя</strong>
+                {{ book[13] }}
+            </p>
+        </div>
+        <div class="media text-muted pt-3">
+            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <strong class="d-block text-gray-dark">Оценки и количество отзывов</strong>
+                {{ book[3] }} / {{ book[4] }}
+            </p>
+        </div>
+    </div>
+</main>
+{% endblock %}

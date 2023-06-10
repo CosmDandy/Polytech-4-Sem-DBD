@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Main{% endblock %}
+{% block extra_head %}
+    <style>
+        .text-shadow-1 {
+            text-shadow: 0 .125rem .25rem rgba(0, 0, 0, .25);
+        }
+
+        .card-cover {
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="m-auto container" style="width: 40em">
+        <h1>Аккаунт</h1>
+        <h4 class="mb-3 py-3">Email</h4>
+        <form action="" method="post">
+            {{ email_form.csrf_token }}
+            <div class="row g-3">
+                <div class="col-12">
+                    {{ email_form.email.label }}
+                    {{ email_form.email(class="form-control py-3", placeholder="Email") }}
+                    {{ email_form.submit(class="btn btn-primary btn-lg btn-block w-100") }}
+                </div>
+            </div>
+        </form>
+
+        <h4 class="mb-3 py-3">Пароль</h4>
+        <form action="" method="post">
+            {{ password_form.csrf_token }}
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    {{ password_form.password.label }}
+                    {{ password_form.password(class="form-control py-3", placeholder="Password") }}
+                </div>
+                <div class="col-sm-6">
+                    {{ password_form.password_confirm.label }}
+                    {{ password_form.password_confirm(class="form-control py-3", placeholder="Password confirm") }}
+                </div>
+                <div class="col-12">
+                    {{ password_form.submit(class="btn btn-primary btn-lg btn-block w-100") }}
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -2,13 +2,13 @@ import logging
 import random
 
 from flask import Blueprint, render_template, flash, redirect
-from flask_login import login_required
+from flask_login import login_required, current_user
 from sqlalchemy import desc, func, or_
 from werkzeug.security import generate_password_hash
 
 from . import db
 from .forms import BookSearchForm, BookForm, UserForm, DeleteForm, ChangeForm, RoleForm, AuthorForm, LanguageForm, \
-    GenreForm, PublisherForm
+    GenreForm, PublisherForm, AccountLoginForm, AccountPasswordForm
 from .models import Book, Author, Genre, Language, Publisher, BookAuthor, BookGenre, BookLanguage, User, Role, Address
 
 main = Blueprint('main', __name__)
@@ -116,32 +116,42 @@ def book(book_id):
         .filter(Book.id == book_id).first()
 
     logging.info(current_book)
-    return str(book_id)
-    # return render_template("book.html", book=book)
+    return render_template("book.html", book=current_book)
 
 
-@main.route('/account')
+@main.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    return render_template("account.html")
+    email_form = AccountLoginForm()
+    if email_form.validate_on_submit():
+        User.query.filter_by(id=current_user.id).update({'email': email_form.email.data})
+        db.session.commit()
+
+    password_form = AccountPasswordForm()
+    if password_form.validate_on_submit():
+        if password_form.password.data == password_form.password_confirm.data:
+            User.query.filter_by(id=current_user.id).update(
+                {'password': generate_password_hash(password_form.password.data, method='sha256')})
+            db.session.commit()
+    return render_template("account.html", email_form=email_form, password_form=password_form)
 
 
-def change(table_name, id):
-    if table_name == 'User':
-        User.query.filter_by(id=id).delete()
-    elif table_name == 'Role':
-        Role.query.filter_by(id=id).delete()
-    elif table_name == 'Address':
-        Address.query.filter_by(id=id).delete()
-    elif table_name == 'Book':
-        Book.query.filter_by(id=id).delete()
-    elif table_name == 'Publisher':
-        Publisher.query.filter_by(id=id).delete()
-    # elif table_name == 'Country':
-    #     Country.query.filter_by(id=id).delete()
-    # elif table_name == 'Company':
-    #     Company.query.filter_by(id=id).delete()
-    db.session.commit()
+# def change(table_name, id):
+#     if table_name == 'User':
+#         User.query.filter_by(id=id).delete()
+#     elif table_name == 'Role':
+#         Role.query.filter_by(id=id).delete()
+#     elif table_name == 'Address':
+#         Address.query.filter_by(id=id).delete()
+#     elif table_name == 'Book':
+#         Book.query.filter_by(id=id).delete()
+#     elif table_name == 'Publisher':
+#         Publisher.query.filter_by(id=id).delete()
+#     # elif table_name == 'Country':
+#     #     Country.query.filter_by(id=id).delete()
+#     # elif table_name == 'Company':
+#     #     Company.query.filter_by(id=id).delete()
+#     db.session.commit()
 
 
 def delete(table_name, id):
